@@ -53,7 +53,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Crystal Glass Effect - Jernih dan Elegan */
         .glass-panel {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
             backdrop-filter: blur(24px);
@@ -68,12 +67,10 @@
         .dynamic-bg-accent { background-color: var(--accent) !important; }
         .dynamic-border-accent { border-color: var(--accent) !important; }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; opacity: 0.5; }
 
-        /* Range Slider Premium */
         input[type=range] { -webkit-appearance: none; background: transparent; }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
@@ -87,7 +84,6 @@
             background: rgba(255, 255, 255, 0.15); border-radius: 2px;
         }
 
-        /* Vinyl Realistis */
         .vinyl-texture {
             background: linear-gradient(30deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%),
                         repeating-radial-gradient(#111 0%, #050505 1%, #111 2%);
@@ -138,7 +134,7 @@
                     <i class="fas fa-bars text-lg text-white opacity-90 hover:opacity-100"></i>
                 </button>
 
-                <!-- Dropdown Menu (Kontekstual Musik / Video) -->
+                <!-- Dropdown Menu -->
                 <div id="dropdown-menu" class="hidden absolute right-0 mt-3 w-60 bg-gray-900/95 backdrop-blur-2xl border border-white/20 rounded-2xl shadow-2xl overflow-hidden z-50">
                     <!-- Menu khusus Music View -->
                     <div id="menu-group-music">
@@ -154,7 +150,7 @@
                     <!-- Menu khusus Video View -->
                     <div id="menu-group-video" class="hidden">
                         <button id="menu-videolist-btn" class="w-full text-left flex items-center gap-3 px-5 py-3 hover:bg-white/15 transition-colors text-xs font-bold border-b border-white/10 focus:outline-none">
-                            <i class="fas fa-film dynamic-accent w-4 text-base"></i> Daftar Video Tersimpan
+                            <i class="fas fa-film dynamic-accent w-4 text-base"></i> Riwayat Video & Audio
                         </button>
                     </div>
 
@@ -163,7 +159,7 @@
                         <i class="fas fa-cog dynamic-accent w-4 text-base"></i> Pengaturan Tema & Audio
                     </button>
                     <button id="menu-install-btn" class="w-full text-left flex items-center gap-3 px-5 py-3 hover:bg-white/15 transition-colors text-xs font-bold text-emerald-400 focus:outline-none">
-                        <i class="fas fa-download w-4 text-base"></i> Download Aplikasi (APPS)
+                        <i class="fas fa-download w-4 text-base"></i> Download Apps (PWA)
                     </button>
                 </div>
             </div>
@@ -171,16 +167,14 @@
 
         <!-- VIEW 1: WINORO MUSIC (Default) -->
         <div id="music-view" class="flex-1 min-h-0 flex flex-col gap-3 transition-all duration-300">
-            <!-- PANEL 2: VISUAL PEMUTAR (Vinyl/Kaset/Ombak/Foto) -->
+            <!-- PANEL 2: VISUAL PEMUTAR -->
             <div class="glass-panel rounded-[2rem] flex-1 min-h-0 flex items-center justify-center relative p-3 group overflow-hidden">
                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
                      <div class="w-[75%] h-[75%] rounded-full dynamic-bg-accent blur-[65px] opacity-15 group-hover:opacity-30 transition-opacity duration-700"></div>
                 </div>
 
-                <!-- Canvas Visualizer Ombak -->
                 <canvas id="wave-canvas" class="absolute inset-0 w-full h-full hidden z-10 opacity-90"></canvas>
                 
-                <!-- Kotak Visual Presisi Rasio 1:1 -->
                 <div id="visual-container" class="relative flex justify-center items-center z-20 transition-all duration-500" style="width: min(100%, 270px); height: min(100%, 270px); aspect-ratio: 1/1;">
                     <div id="disk-cover" class="w-full h-full rounded-full flex justify-center items-center vinyl-texture relative shadow-[0_20px_50px_rgba(0,0,0,0.7)] overflow-hidden" style="transform: translateZ(0); backface-visibility: hidden;">
                         <div id="disk-center" class="w-[30%] h-[30%] rounded-full dynamic-bg-accent border-2 border-[#333] flex justify-center items-center bg-cover bg-center z-10 shadow-lg">
@@ -197,7 +191,6 @@
                     <p id="song-artist" class="text-[10px] sm:text-xs mt-0.5 font-bold tracking-[0.2em] uppercase text-white/60">Pilih folder musik Anda</p>
                 </div>
 
-                <!-- Progress Bar -->
                 <div class="flex flex-col gap-1">
                     <input type="range" id="progress-bar" value="0" min="0" max="100" class="w-full h-1">
                     <div class="flex justify-between text-[10px] font-bold tracking-widest text-white/50">
@@ -206,7 +199,6 @@
                     </div>
                 </div>
 
-                <!-- Tombol Putar & Navigasi -->
                 <div class="flex justify-center items-center gap-6">
                     <button id="prev-btn" class="text-white/60 hover:text-white transition-all transform hover:scale-110 text-lg focus:outline-none">
                         <i class="fas fa-backward-step"></i>
@@ -223,37 +215,50 @@
             </div>
         </div>
 
-        <!-- VIEW 2: WINORO VIDEO (Online Video Player) -->
+        <!-- VIEW 2: WINORO VIDEO & UNIVERSAL MEDIA (Online) -->
         <div id="video-view" class="hidden flex-1 min-h-0 flex flex-col gap-3 transition-all duration-300">
-            <!-- PANEL VIDEO PEMUTAR -->
             <div class="glass-panel rounded-[2rem] flex-1 min-h-0 flex flex-col overflow-hidden relative p-3 sm:p-4">
-                <div id="video-container" class="w-full flex-1 min-h-[200px] bg-black/70 rounded-2xl overflow-hidden relative flex items-center justify-center border border-white/10 shadow-inner">
+                
+                <!-- Status Koneksi Warning jika Offline -->
+                <div id="offline-banner" class="hidden bg-red-500/20 border border-red-500/30 text-red-300 text-[11px] font-bold px-3 py-2 rounded-xl mb-2 flex items-center justify-between">
+                    <span><i class="fas fa-wifi-slash mr-1"></i> Mode Offline: Fitur Video & Audio Online memerlukan koneksi internet aktif.</span>
+                </div>
+
+                <div id="video-container" class="w-full flex-1 min-h-[220px] bg-black/80 rounded-2xl overflow-hidden relative flex items-center justify-center border border-white/10 shadow-inner">
                     <div id="video-placeholder" class="text-center p-6 flex flex-col items-center justify-center">
-                        <i class="fab fa-youtube text-red-500 text-5xl mb-3 animate-pulse"></i>
-                        <h3 class="text-sm font-bold text-white mb-1">Pemutar Video Online</h3>
-                        <p class="text-[11px] text-white/50 max-w-[240px]">Masukkan tautan YouTube atau URL video langsung (.mp4) untuk mulai menonton.</p>
+                        <i class="fas fa-globe text-purple-400 text-5xl mb-3 animate-pulse"></i>
+                        <h3 class="text-sm font-bold text-white mb-1">Universal Media & Video Player</h3>
+                        <p class="text-[11px] text-white/50 max-w-[260px]">Masukkan tautan SoundCloud, YouTube, TikTok, atau URL video langsung (.mp4) untuk mulai menikmati.</p>
                     </div>
                     <div id="video-player-wrapper" class="absolute inset-0 hidden w-full h-full"></div>
                 </div>
 
-                <!-- Input Cepat Link Video -->
-                <div class="mt-3 flex gap-2 shrink-0">
-                    <input type="text" id="video-url-input" placeholder="Tempel link YouTube atau URL video bebas..." class="flex-1 bg-black/40 border border-white/15 rounded-xl px-4 py-2.5 text-xs text-white placeholder-white/40 focus:outline-none focus:border-purple-500 transition-colors">
+                <!-- Floating Picture-in-Picture & Fullscreen Control Bar -->
+                <div class="flex justify-between items-center mt-2 px-1">
+                    <span class="text-[10px] font-bold text-white/60 uppercase tracking-wider"><i class="fas fa-shield-halved text-emerald-400 mr-1"></i> Live Web Stream Engine</span>
+                    <button id="pip-btn" class="hidden bg-white/10 hover:bg-white/20 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg border border-white/10 transition-colors flex items-center gap-1.5">
+                        <i class="fas fa-clone"></i> Mode PiP (Layar Mengambang)
+                    </button>
+                </div>
+
+                <!-- Input Link Universal -->
+                <div class="mt-2 flex gap-2 shrink-0">
+                    <input type="text" id="video-url-input" placeholder="Tempel link SoundCloud, YouTube, atau URL bebas..." class="flex-1 bg-black/40 border border-white/15 rounded-xl px-4 py-2.5 text-xs text-white placeholder-white/40 focus:outline-none focus:border-purple-500 transition-colors">
                     <button id="load-video-btn" class="dynamic-bg-accent text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-lg transition-transform hover:scale-105">
                         <i class="fas fa-play mr-1"></i> Putar
                     </button>
                 </div>
             </div>
 
-            <!-- PANEL INFORMASI / HISTORY VIDEO -->
+            <!-- Riwayat Universal Media -->
             <div class="glass-panel rounded-[2rem] p-4 flex flex-col gap-2 shrink-0">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-xs font-black uppercase tracking-wider text-white/80"><i class="fas fa-history mr-1 dynamic-accent"></i> Riwayat Video</h3>
-                    <span id="video-count" class="text-[10px] font-bold bg-white/5 px-2.5 py-1 rounded-full border border-white/10 dynamic-accent">0 Video</span>
+                    <h3 class="text-xs font-black uppercase tracking-wider text-white/80"><i class="fas fa-history mr-1 dynamic-accent"></i> Riwayat Tautan Tersimpan</h3>
+                    <span id="video-count" class="text-[10px] font-bold bg-white/5 px-2.5 py-1 rounded-full border border-white/10 dynamic-accent">0 Tautan</span>
                 </div>
                 <div class="max-h-24 overflow-y-auto custom-scrollbar">
                     <ul id="video-history-list" class="space-y-1">
-                        <li class="text-xs text-center py-2 opacity-40 font-medium">Belum ada riwayat video.</li>
+                        <li class="text-xs text-center py-2 opacity-40 font-medium">Belum ada riwayat media online.</li>
                     </ul>
                 </div>
             </div>
@@ -409,6 +414,8 @@
         const videoPlayerWrapper = document.getElementById('video-player-wrapper');
         const videoHistoryList = document.getElementById('video-history-list');
         const videoCount = document.getElementById('video-count');
+        const offlineBanner = document.getElementById('offline-banner');
+        const pipBtn = document.getElementById('pip-btn');
 
         // --- State ---
         const audioPlayer = new Audio();
@@ -418,6 +425,18 @@
         let currentTab = 'music';
         let videoHistory = JSON.parse(localStorage.getItem('winoro_video_history') || '[]');
         let deferredPrompt = null;
+
+        // --- Network Status Check for Online Video Tab ---
+        function checkNetworkStatus() {
+            if (!navigator.onLine) {
+                offlineBanner.classList.remove('hidden');
+            } else {
+                offlineBanner.classList.add('hidden');
+            }
+        }
+        window.addEventListener('online', checkNetworkStatus);
+        window.addEventListener('offline', checkNetworkStatus);
+        checkNetworkStatus();
 
         // --- PWA Install Prompt Capture ---
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -432,11 +451,11 @@
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
-                    showToast("Aplikasi berhasil diinstal!");
+                    showToast("Aplikasi berhasil diinstal ke layar utama!");
                 }
                 deferredPrompt = null;
             } else {
-                showToast("Cara Install: Tekan menu browser (...) lalu pilih 'Tambahkan ke Layar Utama' (Add to Home Screen).", "info-circle");
+                showToast("Cara Install: Ketuk menu browser (...) lalu pilih 'Tambahkan ke Layar Utama' (Add to Home Screen).", "info-circle");
             }
         });
 
@@ -452,6 +471,9 @@
                 menuGroupMusic.classList.remove('hidden');
                 menuGroupVideo.classList.add('hidden');
             } else {
+                if (!navigator.onLine) {
+                    showToast("Peringatan: Perangkat Anda sedang offline. Video online tidak dapat dimuat.", "exclamation-triangle");
+                }
                 musicView.classList.add('hidden');
                 videoView.classList.remove('hidden');
                 headerTitle.innerHTML = 'WINORO <span class="dynamic-accent font-light">VIDEO</span>';
@@ -700,6 +722,7 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
+                    localStorage.setItem('winoro_disk_img', e.target.result); // Reusing or bg
                     localStorage.setItem('winoro_bg_img', e.target.result);
                     appBg.style.backgroundImage = `url(${e.target.result})`;
                     appBg.style.animation = 'none';
@@ -941,7 +964,7 @@
 
         function nextSong() {
             if (songs.length === 0) return;
-            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            currentSongIndex = (currentSongIndex + 1 + songs.length) % songs.length;
             loadSong(currentSongIndex);
             playSong();
         }
@@ -964,68 +987,119 @@
             }
         });
 
-        // --- Video Logic ---
-        function parseYouTubeUrl(url) {
-            let videoId = '';
+        // --- Universal Online Media & Video Logic (SoundCloud, YouTube, Direct URL) ---
+        function parseUniversalMediaUrl(url) {
+            if (!url) return null;
+            
+            // Cek Koneksi Internet
+            if (!navigator.onLine) {
+                showToast("Koneksi terputus! Fitur media online memerlukan internet.", "wifi-slash");
+                return null;
+            }
+
+            // YouTube Parser
+            let ytId = '';
             if (url.includes('youtu.be/')) {
-                videoId = url.split('youtu.be/')[1]?.split('?')[0];
+                ytId = url.split('youtu.be/')[1]?.split('?')[0];
             } else if (url.includes('youtube.com/watch')) {
                 const urlParams = new URLSearchParams(new URL(url).search);
-                videoId = urlParams.get('v');
+                ytId = urlParams.get('v');
             } else if (url.includes('youtube.com/embed/')) {
-                videoId = url.split('embed/')[1]?.split('?')[0];
+                ytId = url.split('embed/')[1]?.split('?')[0];
             }
-            return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : null;
+            if (ytId) {
+                return { type: 'iframe', src: `https://www.youtube.com/embed/${ytId}?autoplay=1&enablejsapi=1` };
+            }
+
+            // SoundCloud Parser (Menyematkan pemutar widget SoundCloud secara resmi)
+            if (url.includes('soundcloud.com/')) {
+                const encodedUrl = encodeURIComponent(url);
+                return { type: 'iframe', src: `https://w.soundcloud.com/player/?url=${encodedUrl}&color=%23a855f7&auto_play=true&hide_related=true&show_comments=true&show_user=true&show_reposts=false&show_teaser=false` };
+            }
+
+            // Direct Video / Audio (.mp4, .webm, .ogg)
+            if (url.match(/\.(mp4|webm|ogg|mp3|wav)$/i) || url.startsWith('http')) {
+                return { type: 'video', src: url };
+            }
+
+            return { type: 'iframe', src: url };
         }
 
-        function playOnlineVideo(url) {
-            if (!url.trim()) return showToast("Masukkan link video terlebih dahulu!", "exclamation-triangle");
+        function playOnlineMedia(url) {
+            if (!url.trim()) return showToast("Masukkan link media online terlebih dahulu!", "exclamation-triangle");
+            
+            if (!navigator.onLine) {
+                return showToast("Gagal memuat: Perangkat Anda sedang offline.", "wifi-slash");
+            }
 
             videoPlaceholder.classList.add('hidden');
             videoPlayerWrapper.classList.remove('hidden');
             videoPlayerWrapper.innerHTML = '';
 
-            const ytEmbed = parseYouTubeUrl(url);
-            if (ytEmbed) {
+            const mediaObj = parseUniversalMediaUrl(url);
+            if (!mediaObj) return;
+
+            let activeElement;
+            if (mediaObj.type === 'iframe') {
                 const iframe = document.createElement('iframe');
-                iframe.src = ytEmbed;
+                iframe.src = mediaObj.src;
                 iframe.className = "w-full h-full border-0";
-                iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
+                iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share");
                 iframe.setAttribute("allowfullscreen", "");
                 videoPlayerWrapper.appendChild(iframe);
+                activeElement = iframe;
             } else {
                 const videoEl = document.createElement('video');
-                videoEl.src = url;
+                videoEl.src = mediaObj.src;
                 videoEl.controls = true;
                 videoEl.autoplay = true;
                 videoEl.className = "w-full h-full object-contain bg-black";
                 videoPlayerWrapper.appendChild(videoEl);
+                activeElement = videoEl;
+            }
+
+            // Aktifkan Tombol Picture-in-Picture jika didukung browser
+            if (document.pictureInPictureEnabled && activeElement.tagName === 'VIDEO') {
+                pipBtn.classList.remove('hidden');
+                pipBtn.onclick = async () => {
+                    try {
+                        if (document.pictureInPictureElement) {
+                            await document.exitPictureInPicture();
+                        } else {
+                            await activeElement.requestPictureInPicture();
+                        }
+                    } catch (err) {
+                        showToast("Mode PiP gagal diaktifkan.", "exclamation-circle");
+                    }
+                };
+            } else {
+                pipBtn.classList.add('hidden');
             }
 
             if (!videoHistory.includes(url)) {
                 videoHistory.unshift(url);
-                if (videoHistory.length > 15) videoHistory.pop();
+                if (videoHistory.length > 20) videoHistory.pop();
                 localStorage.setItem('winoro_video_history', JSON.stringify(videoHistory));
             }
             renderVideoHistory();
-            showToast("Memuat video...");
+            showToast("Memuat media online...");
         }
 
         loadVideoBtn.addEventListener('click', () => {
-            playOnlineVideo(videoUrlInput.value);
+            playOnlineMedia(videoUrlInput.value);
         });
 
         videoUrlInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                playOnlineVideo(videoUrlInput.value);
+                playOnlineMedia(videoUrlInput.value);
             }
         });
 
         function renderVideoHistory() {
             videoHistoryList.innerHTML = '';
-            videoCount.innerText = `${videoHistory.length} Video`;
+            videoCount.innerText = `${videoHistory.length} Tautan`;
             if (videoHistory.length === 0) {
-                videoHistoryList.innerHTML = `<li class="text-xs text-center py-2 opacity-40 font-medium">Belum ada riwayat video.</li>`;
+                videoHistoryList.innerHTML = `<li class="text-xs text-center py-2 opacity-40 font-medium">Belum ada riwayat media online.</li>`;
                 return;
             }
 
@@ -1034,7 +1108,7 @@
                 li.className = "p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-between cursor-pointer group";
                 li.innerHTML = `
                     <div class="flex items-center gap-2 truncate flex-1 mr-2">
-                        <i class="fas fa-play-circle dynamic-accent text-xs"></i>
+                        <i class="fas fa-link dynamic-accent text-xs"></i>
                         <span class="truncate text-[11px] font-medium text-white/80 group-hover:text-white">${url}</span>
                     </div>
                     <button class="text-red-400 hover:text-red-300 text-xs px-2 py-1 focus:outline-none" title="Hapus">
@@ -1051,7 +1125,7 @@
                         return;
                     }
                     videoUrlInput.value = url;
-                    playOnlineVideo(url);
+                    playOnlineMedia(url);
                 });
                 videoHistoryList.appendChild(li);
             });
