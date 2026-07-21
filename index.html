@@ -2,30 +2,39 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WINORO MUSIC PLAYER</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
         :root {
             /* Tema Default (Midnight Purple) */
             --bg-1: #0f0c29;
             --bg-2: #302b63;
             --bg-3: #24243e;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --accent: #a855f7; /* Purple 500 */
+            --accent: #a855f7;
             --text-main: #ffffff;
-            --text-muted: #9ca3af;
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --panel-bg: rgba(255, 255, 255, 0.05);
+            --panel-border: rgba(255, 255, 255, 0.1);
         }
 
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: var(--text-main);
+            overflow: hidden; /* Mencegah scroll di body */
+        }
+
+        #app-bg {
             background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-1));
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
-            color: var(--text-main);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
         }
 
         @keyframes gradientBG {
@@ -34,31 +43,29 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Elemen dengan warna dinamis */
+        /* Glass Panel */
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
         .dynamic-accent { color: var(--accent) !important; }
         .dynamic-bg-accent { background-color: var(--accent) !important; }
-        .dynamic-border-accent { border-color: var(--accent) !important; }
-        .dynamic-card { background: var(--card-bg) !important; }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); border-radius: 10px; }
+        /* Custom Scrollbar untuk Daftar Musik */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; opacity: 0.5; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-main); }
-
-        .vinyl-record {
-            background: repeating-radial-gradient(#111 0%, #000 5%, #111 10%);
-            box-shadow: 0 0 20px rgba(0,0,0,0.8) inset, 0 10px 25px rgba(0,0,0,0.5);
-        }
-        .spin { animation: spin 4s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* Range Slider */
         input[type=range] { -webkit-appearance: none; background: transparent; }
         input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%;
-            background: var(--accent); cursor: pointer; margin-top: -4px;
-            box-shadow: 0 0 10px var(--accent); transition: transform 0.1s;
+            -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%;
+            background: var(--accent); cursor: pointer; margin-top: -5px;
+            box-shadow: 0 0 10px var(--accent); transition: transform 0.2s;
         }
         input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.3); }
         input[type=range]::-webkit-slider-runnable-track {
@@ -66,159 +73,240 @@
             background: rgba(255, 255, 255, 0.2); border-radius: 2px;
         }
 
-        /* Animations for Modals/Toast */
+        /* Vinyl Animation */
+        .vinyl-texture {
+            background: repeating-radial-gradient(#111 0%, #000 5%, #111 10%);
+            box-shadow: 0 0 20px rgba(0,0,0,0.8) inset, 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .spin { animation: spin 4s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Animations */
         .fade-in { animation: fadeIn 0.3s ease forwards; }
         .fade-out { animation: fadeOut 0.3s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-10px); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(10px); } }
+
+        /* --- ESTETIKA PREMIUM BARU --- */
+        
+        /* Efek Tekstur Kasar/Noise pada Latar Belakang agar Terasa Mewah */
+        .noise-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Piringan Hitam dengan Efek Pantulan Cahaya (Glossy) */
+        .vinyl-texture {
+            background: linear-gradient(30deg, transparent 40%, rgba(255,255,255,0.05) 50%, transparent 60%),
+                        repeating-radial-gradient(#111 0%, #000 1%, #111 2%);
+            box-shadow: 0 0 20px rgba(0,0,0,0.8) inset, 0 15px 35px rgba(0,0,0,0.6);
+        }
+        
+        /* Lapisan Kilap (Refleksi) Piringan */
+        .vinyl-texture::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: conic-gradient(from 45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 15%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.15) 65%, rgba(255,255,255,0) 80%);
+            pointer-events: none;
+        }
+
+        /* Mempercantik kotak panel (Efek Kaca Apple/macOS) */
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--panel-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.25); /* Cahaya ujung atas kaca */
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4 sm:p-8">
+<body class="relative min-h-[100dvh] w-full flex items-center justify-center">
 
-    <!-- Main App Card -->
-    <div class="dynamic-card backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-[0_8px_32px_0_rgba(0,0,0,0.5)] p-8 w-full max-w-md min-h-[550px] sm:min-h-[600px] flex flex-col gap-8 relative overflow-hidden transition-all duration-500">
+    <!-- Latar Belakang (Warna Animasi atau Foto Kustom) -->
+    <div id="app-bg" class="absolute inset-0 z-0 transition-all duration-700"></div>
+    <div class="noise-overlay"></div> <!-- Tekstur Premium Tambahan -->
+    <div class="absolute inset-0 z-0 bg-black/40 backdrop-blur-[6px]"></div> <!-- Dimmer yang lebih pekat -->
+
+    <!-- Main Layout: Terpisah dan Responsif Mobile -->
+    <div class="relative z-10 w-full max-w-md h-[100dvh] flex flex-col justify-between p-4 sm:p-6 gap-4 mx-auto">
         
-        <!-- Header & Hamburger Menu -->
-        <div class="flex justify-between items-center relative z-20">
+        <!-- PANEL 1: HEADER & MENU -->
+        <div class="glass-panel rounded-2xl p-4 flex justify-between items-center z-20 shrink-0">
             <div>
-                <h1 class="text-xl font-bold tracking-tight">WINORO <span class="dynamic-accent font-light">MUSIC</span></h1>
-                <p class="text-[10px] opacity-70 mt-1 font-medium tracking-wide uppercase" style="color: var(--text-muted)">Offline Player</p>
+                <h1 class="text-xl font-extrabold tracking-tight">WINORO <span class="dynamic-accent font-light">MUSIC</span></h1>
             </div>
             
             <div class="relative">
-                <!-- Tombol Garis 3 -->
-                <button id="menu-btn" class="w-10 h-10 rounded-full flex justify-center items-center hover:bg-white/10 transition-colors border border-transparent hover:border-white/20 focus:outline-none">
-                    <i class="fas fa-bars text-lg dynamic-accent"></i>
+                <button id="menu-btn" class="w-10 h-10 rounded-full flex justify-center items-center hover:bg-white/10 transition-colors focus:outline-none">
+                    <i class="fas fa-bars text-xl dynamic-accent"></i>
                 </button>
 
                 <!-- Dropdown Menu -->
                 <div id="dropdown-menu" class="hidden absolute right-0 mt-3 w-56 bg-gray-900/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl overflow-hidden z-50">
                     <input type="file" id="file-input" class="hidden" webkitdirectory directory multiple>
-                    <label for="file-input" class="cursor-pointer flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-sm font-semibold border-b border-white/10">
+                    <label for="file-input" class="cursor-pointer flex items-center gap-3 px-5 py-4 hover:bg-white/10 transition-colors text-sm font-bold border-b border-white/10">
                         <i class="fas fa-folder-plus dynamic-accent w-5 text-base"></i> Pilih Folder Lagu
                     </label>
-                    <button id="menu-playlist-btn" class="w-full text-left flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-sm font-semibold border-b border-white/10 focus:outline-none">
+                    <button id="menu-playlist-btn" class="w-full text-left flex items-center gap-3 px-5 py-4 hover:bg-white/10 transition-colors text-sm font-bold border-b border-white/10">
                         <i class="fas fa-list-ul dynamic-accent w-5 text-base"></i> Buka Daftar Musik
                     </button>
-                    <button id="menu-settings-btn" class="w-full text-left flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-sm font-semibold focus:outline-none">
-                        <i class="fas fa-cog dynamic-accent w-5 text-base"></i> Pengaturan Tema
+                    <button id="menu-settings-btn" class="w-full text-left flex items-center gap-3 px-5 py-4 hover:bg-white/10 transition-colors text-sm font-bold">
+                        <i class="fas fa-sliders-h dynamic-accent w-5 text-base"></i> Pengaturan
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Vinyl Record Visualization -->
-        <div class="flex justify-center items-center py-4 relative z-10">
-            <div id="disk-cover" class="w-52 h-52 sm:w-56 sm:h-56 rounded-full flex justify-center items-center transition-all duration-300 vinyl-record relative">
-                <div class="w-16 h-16 rounded-full dynamic-bg-accent border-2 border-[#333] shadow-[0_0_15px_rgba(0,0,0,0.8)_inset] flex justify-center items-center transition-colors duration-500">
-                    <div class="w-3.5 h-3.5 bg-[#111] rounded-full border border-black/50 shadow-[0_0_3px_rgba(255,255,255,0.4)_inset]"></div>
+        <!-- PANEL 2: VISUAL (Piringan/Kaset/Ombak) -->
+        <div class="glass-panel rounded-[2rem] flex-1 min-h-0 flex items-center justify-center relative overflow-hidden">
+            <!-- Canvas untuk Visualizer Ombak -->
+            <canvas id="wave-canvas" class="absolute inset-0 w-full h-full hidden z-10"></canvas>
+            
+            <!-- Tempat Piringan / Kaset / Foto -->
+            <div id="visual-container" class="w-56 h-56 sm:w-64 sm:h-64 flex justify-center items-center z-20 relative transition-all duration-500">
+                <!-- Default Vinyl -->
+                <div id="disk-cover" class="w-full h-full rounded-full flex justify-center items-center vinyl-texture relative shadow-2xl">
+                    <div id="disk-center" class="w-16 h-16 rounded-full dynamic-bg-accent border-2 border-[#333] flex justify-center items-center bg-cover bg-center">
+                        <div class="w-3.5 h-3.5 bg-[#111] rounded-full"></div>
+                    </div>
                 </div>
-                <div class="absolute inset-0 rounded-full bg-gradient-to-tr from-white/0 via-white/10 to-white/0 pointer-events-none transform -rotate-45"></div>
             </div>
         </div>
 
-        <!-- Song Info & Player Controls -->
-        <div class="flex flex-col gap-6 relative z-10 mt-2">
-            <div class="text-center px-3">
-                <h2 id="song-title" class="text-2xl sm:text-3xl font-black truncate drop-shadow-xl tracking-tight leading-tight">Belum ada lagu</h2>
-                <p id="song-artist" class="text-[12px] sm:text-[13px] mt-2 font-bold tracking-widest uppercase opacity-80" style="color: var(--text-muted)">Pilih folder musik Anda</p>
+        <!-- PANEL 3: INFORMASI LAGU & KONTROL -->
+        <div class="glass-panel rounded-[2rem] p-6 flex flex-col gap-5 shrink-0 mb-2">
+            <!-- Teks -->
+            <div class="text-center px-2">
+                <h2 id="song-title" class="text-2xl font-black truncate tracking-tight drop-shadow-md">Belum ada lagu</h2>
+                <p id="song-artist" class="text-sm mt-1 font-semibold tracking-wider uppercase" style="color: var(--text-muted)">Pilih folder musik</p>
             </div>
 
-            <!-- Progress Bar -->
-            <div class="flex flex-col gap-2 mt-2">
-                <input type="range" id="progress-bar" value="0" min="0" max="100" class="w-full">
-                <div class="flex justify-between text-[11px] font-medium tracking-wider" style="color: var(--text-muted)">
+            <!-- Progress -->
+            <div class="flex flex-col gap-2 mt-1">
+                <input type="range" id="progress-bar" value="0" min="0" max="100" class="w-full h-1">
+                <div class="flex justify-between text-xs font-bold tracking-wider" style="color: var(--text-muted)">
                     <span id="current-time">00:00</span>
                     <span id="duration-time">00:00</span>
                 </div>
             </div>
 
-            <!-- Main Controls -->
+            <!-- Tombol Putar -->
             <div class="flex justify-center items-center gap-8 mt-2">
-                <button id="prev-btn" class="hover:text-white transition-all transform hover:scale-110 text-xl focus:outline-none" style="color: var(--text-muted)">
+                <button id="prev-btn" class="hover:text-white transition-all transform hover:scale-110 text-2xl focus:outline-none" style="color: var(--text-muted)">
                     <i class="fas fa-backward-step"></i>
                 </button>
                 
-                <button id="play-btn" class="w-16 h-16 dynamic-bg-accent text-white rounded-full flex justify-center items-center text-2xl transition-all transform hover:scale-105 shadow-lg focus:outline-none disabled:opacity-50">
+                <button id="play-btn" class="w-16 h-16 dynamic-bg-accent text-white rounded-full flex justify-center items-center text-2xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(0,0,0,0.5)] focus:outline-none disabled:opacity-50">
                     <i class="fas fa-play ml-1"></i>
                 </button>
                 
-                <button id="next-btn" class="hover:text-white transition-all transform hover:scale-110 text-xl focus:outline-none" style="color: var(--text-muted)">
+                <button id="next-btn" class="hover:text-white transition-all transform hover:scale-110 text-2xl focus:outline-none" style="color: var(--text-muted)">
                     <i class="fas fa-forward-step"></i>
                 </button>
             </div>
         </div>
+    </div>
 
-        <!-- Drawer Overlay (Dim Background) -->
-        <div id="drawer-overlay" class="absolute inset-0 bg-black/60 z-30 opacity-0 pointer-events-none transition-opacity duration-500"></div>
+    <!-- OVERLAY (Latar Belakang Gelap untuk Laci & Modal) -->
+    <div id="drawer-overlay" class="fixed inset-0 bg-black/70 z-30 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-sm"></div>
 
-        <!-- Playlist Drawer (Bottom Up) -->
-        <div id="playlist-drawer" class="absolute inset-x-0 bottom-0 h-[85%] bg-gray-900/80 backdrop-blur-3xl rounded-t-[2.5rem] border-t border-white/10 transform translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] z-40 flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
-            
-            <!-- Drag Handle / Header -->
-            <div id="close-drawer-btn" class="flex flex-col items-center pt-5 pb-3 cursor-pointer group">
-                <div class="w-12 h-1.5 bg-white/20 group-hover:bg-white/50 rounded-full transition-colors"></div>
-            </div>
-            
-            <div class="px-6 pb-4 pt-1 flex justify-between items-center border-b border-white/10">
-                <h3 class="text-sm font-bold uppercase tracking-widest text-white"><i class="fas fa-stream mr-2 dynamic-accent"></i>Daftar Musik</h3>
-                <span id="playlist-count" class="text-xs font-bold bg-white/10 px-3 py-1.5 rounded-full border border-white/10 dynamic-accent">0 Track</span>
-            </div>
-            
-            <!-- Scrollable Playlist -->
-            <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
-                <ul id="playlist" class="space-y-2 pb-8">
-                    <li class="text-sm text-center mt-12 font-light opacity-50">Tidak ada lagu. Tambahkan dari folder.</li>
-                </ul>
-            </div>
+    <!-- LACI DAFTAR MUSIK (Tersembunyi di bawah) -->
+    <div id="playlist-drawer" class="fixed inset-x-0 bottom-0 h-[75dvh] max-w-md mx-auto bg-[#1a1c29]/95 backdrop-blur-xl rounded-t-[2.5rem] border-t border-white/10 transform translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] z-40 flex flex-col shadow-[0_-20px_50px_rgba(0,0,0,0.6)]">
+        <!-- Handle atas -->
+        <div id="close-drawer-btn" class="flex flex-col items-center pt-4 pb-3 cursor-pointer group">
+            <div class="w-14 h-1.5 bg-white/20 group-hover:bg-white/50 rounded-full transition-colors"></div>
+        </div>
+        
+        <div class="px-6 pb-4 pt-2 flex justify-between items-center border-b border-white/10 shrink-0">
+            <h3 class="text-sm font-black uppercase tracking-widest text-white"><i class="fas fa-list mr-2 dynamic-accent"></i>Daftar Lagu</h3>
+            <span id="playlist-count" class="text-xs font-bold bg-white/10 px-3 py-1.5 rounded-full border border-white/10 dynamic-accent">0 Track</span>
+        </div>
+        
+        <!-- List -->
+        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+            <ul id="playlist" class="space-y-2 pb-8">
+                <li class="text-sm text-center mt-12 font-medium opacity-50">Silakan pilih folder musik melalui menu.</li>
+            </ul>
         </div>
     </div>
 
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-sm bg-black/50">
-        <div class="bg-gray-900 border border-white/10 rounded-3xl w-full max-w-md p-6 shadow-2xl overflow-y-auto max-h-[90vh]">
+    <!-- MODAL PENGATURAN (Sound Booster & Visual) -->
+    <div id="settings-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="bg-[#1a1c29]/95 backdrop-blur-xl border border-white/10 rounded-[2rem] w-full max-w-md p-6 shadow-2xl overflow-y-auto max-h-[90dvh] custom-scrollbar">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-lg font-bold text-white"><i class="fas fa-palette mr-2 dynamic-accent"></i> Pengaturan Tampilan</h3>
-                <button id="close-settings" class="text-gray-400 hover:text-white text-xl focus:outline-none"><i class="fas fa-times"></i></button>
+                <h3 class="text-lg font-black text-white"><i class="fas fa-sliders-h mr-2 dynamic-accent"></i> Pengaturan</h3>
+                <button id="close-settings" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors focus:outline-none"><i class="fas fa-times"></i></button>
             </div>
             
-            <p class="text-xs text-gray-400 mb-4 uppercase tracking-wider font-semibold">Pilih Tema</p>
-            <div id="themes-grid" class="grid grid-cols-5 gap-3 mb-6">
-                <!-- Generated via JS -->
+            <!-- Audio Booster Section -->
+            <div class="mb-6 bg-white/5 p-4 rounded-2xl border border-white/5">
+                <p class="text-xs text-gray-400 mb-3 uppercase tracking-wider font-bold"><i class="fas fa-bolt text-yellow-400 mr-1"></i> Sound Booster (Volume)</p>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-volume-down text-gray-400 text-xs"></i>
+                    <input type="range" id="booster-slider" min="0.5" max="2.5" step="0.1" value="1" class="flex-1 h-1">
+                    <span id="booster-val" class="text-xs font-bold dynamic-accent w-8 text-right">100%</span>
+                </div>
+                <p class="text-[10px] text-gray-500 mt-2">Peringatan: Menaikkan lebih dari 150% dapat memecahkan suara jika speaker tidak mendukung.</p>
             </div>
 
-            <!-- Custom Theme Section -->
-            <div id="custom-theme-section" class="hidden border-t border-white/10 pt-4 mt-2">
-                <p class="text-xs text-gray-400 mb-4 uppercase tracking-wider font-semibold">Tema Kustom</p>
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm text-gray-300">Warna Aksen / Piringan</label>
-                        <input type="color" id="cust-accent" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 p-0">
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm text-gray-300">Warna Background 1</label>
-                        <input type="color" id="cust-bg1" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 p-0">
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <label class="text-sm text-gray-300">Warna Background 2</label>
-                        <input type="color" id="cust-bg2" class="w-8 h-8 rounded cursor-pointer bg-transparent border-0 p-0">
-                    </div>
-                    <button id="apply-custom-btn" class="w-full mt-2 bg-white/10 hover:bg-white/20 text-white text-sm font-bold py-2 rounded-xl transition-colors">Terapkan Kustom</button>
+            <!-- Visual Style Section -->
+            <div class="mb-6 bg-white/5 p-4 rounded-2xl border border-white/5">
+                <p class="text-xs text-gray-400 mb-3 uppercase tracking-wider font-bold"><i class="fas fa-eye dynamic-accent mr-1"></i> Tampilan Pemutar</p>
+                <select id="visual-mode" class="w-full bg-black/50 border border-white/20 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-purple-500 transition-colors">
+                    <option value="vinyl">Piringan Hitam (Vinyl Klasik)</option>
+                    <option value="wave">Visualizer Ombak (Animasi Bass)</option>
+                    <option value="cassette">Kaset Pita (Retro)</option>
+                    <option value="photo">Foto Kustom (Lingkaran)</option>
+                </select>
+
+                <!-- Input Foto Kustom (Tersembunyi by default) -->
+                <div id="custom-photo-input-group" class="hidden mt-3">
+                    <input type="file" id="disk-photo-input" accept="image/*" class="hidden">
+                    <label for="disk-photo-input" class="w-full block text-center cursor-pointer bg-white/10 hover:bg-white/20 text-white text-xs font-bold py-2.5 rounded-lg transition-colors border border-white/10">
+                        <i class="fas fa-upload mr-1"></i> Upload Foto Pemutar
+                    </label>
                 </div>
             </div>
-            
-            <div class="mt-8 border-t border-white/10 pt-4 text-center">
-                <button id="clear-db-btn" class="text-xs text-red-400 hover:text-red-300 font-medium px-4 py-2 bg-red-500/10 rounded-full hover:bg-red-500/20 transition-colors">
+
+            <!-- Background Section -->
+            <div class="mb-6 bg-white/5 p-4 rounded-2xl border border-white/5">
+                <p class="text-xs text-gray-400 mb-3 uppercase tracking-wider font-bold"><i class="fas fa-image dynamic-accent mr-1"></i> Latar Belakang (Background)</p>
+                <input type="file" id="bg-photo-input" accept="image/*" class="hidden">
+                <div class="flex gap-2">
+                    <label for="bg-photo-input" class="flex-1 text-center cursor-pointer bg-white/10 hover:bg-white/20 text-white text-xs font-bold py-2.5 rounded-lg transition-colors border border-white/10">
+                        <i class="fas fa-upload mr-1"></i> Ganti Foto Latar
+                    </label>
+                    <button id="reset-bg-btn" class="px-4 bg-red-500/20 hover:bg-red-500/40 text-red-300 text-xs font-bold py-2.5 rounded-lg transition-colors border border-red-500/20" title="Kembalikan ke warna default">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Theme Colors -->
+            <div class="mb-4">
+                <p class="text-xs text-gray-400 mb-3 uppercase tracking-wider font-bold">Warna Aksen</p>
+                <div id="themes-grid" class="flex flex-wrap gap-3">
+                    <!-- Tombol Warna via JS -->
+                </div>
+            </div>
+
+            <!-- Reset DB -->
+            <div class="mt-6 border-t border-white/10 pt-4">
+                <button id="clear-db-btn" class="w-full text-xs text-red-400 font-bold px-4 py-3 bg-red-500/10 rounded-xl hover:bg-red-500/20 transition-colors border border-red-500/10">
                     <i class="fas fa-trash-alt mr-1"></i> Hapus Semua Lagu Tersimpan
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="hidden fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-2xl border border-white/10 text-sm font-medium z-[200]">
-        <!-- Pesan akan diisi lewat JS -->
-    </div>
+    <!-- Toast -->
+    <div id="toast" class="hidden fixed top-5 left-1/2 transform -translate-x-1/2 bg-gray-900/95 text-white px-6 py-3 rounded-2xl shadow-2xl border border-white/20 text-sm font-bold z-[200] backdrop-blur-md"></div>
 
     <script>
         // DOM Elements
@@ -232,22 +320,26 @@
         const progressBar = document.getElementById('progress-bar');
         const currentTimeEl = document.getElementById('current-time');
         const durationTimeEl = document.getElementById('duration-time');
-        const diskCover = document.getElementById('disk-cover');
         const playlistCount = document.getElementById('playlist-count');
-        const toast = document.getElementById('toast');
         
-        // Menu Elements
+        // Visual Elements
+        const diskCover = document.getElementById('disk-cover');
+        const diskCenter = document.getElementById('disk-center');
+        const visualContainer = document.getElementById('visual-container');
+        const waveCanvas = document.getElementById('wave-canvas');
+        const appBg = document.getElementById('app-bg');
+        
+        // UI Elements
         const menuBtn = document.getElementById('menu-btn');
         const dropdownMenu = document.getElementById('dropdown-menu');
         const menuPlaylistBtn = document.getElementById('menu-playlist-btn');
         const menuSettingsBtn = document.getElementById('menu-settings-btn');
-        const settingsModal = document.getElementById('settings-modal');
-        const closeSettingsBtn = document.getElementById('close-settings');
-        
-        // Drawer Elements
         const playlistDrawer = document.getElementById('playlist-drawer');
         const drawerOverlay = document.getElementById('drawer-overlay');
         const closeDrawerBtn = document.getElementById('close-drawer-btn');
+        const settingsModal = document.getElementById('settings-modal');
+        const closeSettingsBtn = document.getElementById('close-settings');
+        const toast = document.getElementById('toast');
 
         // State Variables
         const audioPlayer = new Audio();
@@ -255,9 +347,87 @@
         let currentSongIndex = 0; 
         let isPlaying = false; 
 
+        // --- WEB AUDIO API (Booster & Visualizer) ---
+        let audioCtx, audioSource, gainNode, analyser;
+        let animationId;
+
+        function initAudioEngine() {
+            if (audioCtx) return; // Inisialisasi sekali saja
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            audioSource = audioCtx.createMediaElementSource(audioPlayer);
+            gainNode = audioCtx.createGain();
+            analyser = audioCtx.createAnalyser();
+            
+            // Routing sinyal: Audio -> Gain (Booster) -> Analyser (Ombak) -> Output Speaker
+            audioSource.connect(gainNode);
+            gainNode.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            
+            analyser.fftSize = 256; // Ketelitian frekuensi
+            loadSettings(); // Terapkan level booster yang tersimpan
+        }
+
+        // Fungsi Menggambar Animasi Ombak
+        function drawWave() {
+            if (!analyser || document.getElementById('visual-mode').value !== 'wave') return;
+            const ctx = waveCanvas.getContext('2d');
+            waveCanvas.width = visualContainer.clientWidth;
+            waveCanvas.height = visualContainer.clientHeight;
+            
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            
+            analyser.getByteFrequencyData(dataArray);
+            
+            ctx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+            
+            const centerX = waveCanvas.width / 2;
+            const centerY = waveCanvas.height / 2;
+            const radius = 45; 
+            const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+
+            // Gambar lingkaran pusat
+            const average = dataArray.reduce((a, b) => a + b) / bufferLength;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius + (average * 0.1), 0, 2 * Math.PI);
+            ctx.fillStyle = '#111';
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = accentColor;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = accentColor;
+            ctx.stroke();
+            ctx.shadowBlur = 0; // reset shadow
+
+            // Gambar batang ombak menyala (Neon Circular Bars)
+            for (let i = 0; i < bufferLength; i += 3) {
+                const barHeight = (dataArray[i] / 255) * 55; // Tinggi maksimum respons bass
+                const rad = (i * 2 * Math.PI) / bufferLength;
+                
+                const startX = centerX + Math.cos(rad) * (radius + 5);
+                const startY = centerY + Math.sin(rad) * (radius + 5);
+                const endX = centerX + Math.cos(rad) * (radius + 5 + barHeight);
+                const endY = centerY + Math.sin(rad) * (radius + 5 + barHeight);
+                
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(endX, endY);
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = accentColor;
+                ctx.shadowBlur = 12; // Efek Neon Menyala
+                ctx.shadowColor = accentColor;
+                ctx.stroke();
+            }
+
+            if (isPlaying) {
+                animationId = requestAnimationFrame(drawWave);
+            }
+        }
+
         // --- UI Utilities ---
         function showToast(message) {
-            toast.innerHTML = `<i class="fas fa-info-circle mr-2 dynamic-accent"></i> ${message}`;
+            toast.innerHTML = `<i class="fas fa-check-circle mr-2 dynamic-accent"></i> ${message}`;
             toast.classList.remove('hidden', 'fade-out');
             toast.classList.add('fade-in');
             setTimeout(() => {
@@ -267,7 +437,7 @@
             }, 3000);
         }
 
-        // Toggle Menu
+        // Menu & Laci
         menuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             dropdownMenu.classList.toggle('hidden');
@@ -278,109 +448,202 @@
             }
         });
 
-        // Menu Actions
+        // BUKA LACI DAFTAR MUSIK (Manual saja)
         menuPlaylistBtn.addEventListener('click', () => {
             dropdownMenu.classList.add('hidden');
-            // Buka Laci (Drawer)
             playlistDrawer.classList.remove('translate-y-full');
             drawerOverlay.classList.remove('opacity-0', 'pointer-events-none');
             drawerOverlay.classList.add('opacity-100', 'pointer-events-auto');
         });
 
-        // Fungsi Tutup Laci
-        function closeDrawer() {
+        // TUTUP LACI
+        function closeModals() {
             playlistDrawer.classList.add('translate-y-full');
             drawerOverlay.classList.remove('opacity-100', 'pointer-events-auto');
             drawerOverlay.classList.add('opacity-0', 'pointer-events-none');
+            settingsModal.classList.add('hidden');
         }
+        closeDrawerBtn.addEventListener('click', closeModals);
+        drawerOverlay.addEventListener('click', closeModals);
 
-        closeDrawerBtn.addEventListener('click', closeDrawer);
-        drawerOverlay.addEventListener('click', closeDrawer);
-
+        // PENGATURAN
         menuSettingsBtn.addEventListener('click', () => {
             dropdownMenu.classList.add('hidden');
             settingsModal.classList.remove('hidden');
+            drawerOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            drawerOverlay.classList.add('opacity-100', 'pointer-events-auto');
         });
-        closeSettingsBtn.addEventListener('click', () => {
-            settingsModal.classList.add('hidden');
-        });
+        closeSettingsBtn.addEventListener('click', closeModals);
 
-        // --- Themes System ---
-        const themes = [
-            { id: 1, name: 'Default', bg1: '#0f0c29', bg2: '#302b63', bg3: '#24243e', card: 'rgba(255,255,255,0.05)', accent: '#a855f7', text: '#ffffff', icon: 'M' },
-            { id: 2, name: 'Ocean', bg1: '#020024', bg2: '#090979', bg3: '#00d4ff', card: 'rgba(0,0,0,0.3)', accent: '#00d4ff', text: '#ffffff', icon: 'O' },
-            { id: 3, name: 'Forest', bg1: '#134e5e', bg2: '#71b280', bg3: '#134e5e', card: 'rgba(255,255,255,0.1)', accent: '#a7f3d0', text: '#ffffff', icon: 'F' },
-            { id: 4, name: 'Crimson', bg1: '#4a0000', bg2: '#800000', bg3: '#2d0000', card: 'rgba(0,0,0,0.4)', accent: '#ef4444', text: '#fca5a5', icon: 'C' },
-            { id: 5, name: 'Sunset', bg1: '#ff4e50', bg2: '#f9d423', bg3: '#ff4e50', card: 'rgba(255,255,255,0.15)', accent: '#111827', text: '#111827', icon: 'S' },
-            { id: 6, name: 'Obsidian', bg1: '#000000', bg2: '#1a1a1a', bg3: '#0a0a0a', card: 'rgba(255,255,255,0.03)', accent: '#d1d5db', text: '#ffffff', icon: 'B' },
-            { id: 7, name: 'Cyberpunk', bg1: '#21094e', bg2: '#511281', bg3: '#21094e', card: 'rgba(0,0,0,0.5)', accent: '#00ffcc', text: '#ff0055', icon: 'P' },
-            { id: 8, name: 'Coffee', bg1: '#3e2723', bg2: '#4e342e', bg3: '#1b0000', card: 'rgba(255,255,255,0.05)', accent: '#ffb300', text: '#fff8e1', icon: 'K' },
-            { id: 9, name: 'Frost', bg1: '#e0eafc', bg2: '#cfdef3', bg3: '#e0eafc', card: 'rgba(255,255,255,0.4)', accent: '#3b82f6', text: '#1e3a8a', icon: 'I' },
-            { id: 10, name: 'Custom', isCustom: true, icon: '+' }
-        ];
-
-        function applyTheme(theme) {
-            const root = document.documentElement;
-            root.style.setProperty('--bg-1', theme.bg1);
-            root.style.setProperty('--bg-2', theme.bg2);
-            root.style.setProperty('--bg-3', theme.bg3);
-            root.style.setProperty('--card-bg', theme.card || 'rgba(255,255,255,0.05)');
-            root.style.setProperty('--accent', theme.accent);
-            root.style.setProperty('--text-main', theme.text);
-            
-            // Adjust muted text based on background lightness
-            const isLight = theme.id === 5 || theme.id === 9;
-            root.style.setProperty('--text-muted', isLight ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.6)');
-            
-            localStorage.setItem('winoro_theme', JSON.stringify(theme));
-        }
-
-        // Render Themes Grid
+        // --- THEMES & CUSTOMIZATION ---
+        const colors = ['#a855f7', '#00d4ff', '#10b981', '#ef4444', '#f59e0b', '#ec4899', '#ffffff'];
         const themesGrid = document.getElementById('themes-grid');
-        const customSection = document.getElementById('custom-theme-section');
         
-        themes.forEach(t => {
+        colors.forEach(c => {
             const btn = document.createElement('button');
-            btn.className = `w-12 h-12 rounded-full border-2 border-white/20 flex items-center justify-center font-bold text-sm shadow-md hover:scale-110 transition-transform ${t.isCustom ? 'bg-gray-800 text-white' : ''}`;
-            if (!t.isCustom) {
-                btn.style.background = `linear-gradient(45deg, ${t.bg1}, ${t.bg2})`;
-                btn.style.color = t.text;
-            }
-            btn.innerText = t.icon;
-            btn.title = t.name;
-            
+            btn.className = `w-8 h-8 rounded-full border-2 border-transparent hover:border-white transition-all hover:scale-110`;
+            btn.style.backgroundColor = c;
             btn.addEventListener('click', () => {
-                if (t.isCustom) {
-                    customSection.classList.remove('hidden');
-                } else {
-                    customSection.classList.add('hidden');
-                    applyTheme(t);
-                    showToast(`Tema ${t.name} diterapkan!`);
-                }
+                document.documentElement.style.setProperty('--accent', c);
+                localStorage.setItem('winoro_color', c);
+                if(isPlaying) drawWave(); // update warna ombak
             });
             themesGrid.appendChild(btn);
         });
 
-        // Custom Theme Handler
-        document.getElementById('apply-custom-btn').addEventListener('click', () => {
-            const cAccent = document.getElementById('cust-accent').value;
-            const cBg1 = document.getElementById('cust-bg1').value;
-            const cBg2 = document.getElementById('cust-bg2').value;
+        // Tampilan Mode
+        const visualModeSelect = document.getElementById('visual-mode');
+        const customPhotoGroup = document.getElementById('custom-photo-input-group');
+        
+        function updateVisualMode(mode) {
+            waveCanvas.classList.add('hidden');
+            diskCover.className = 'w-full h-full flex justify-center items-center relative transition-all duration-500';
             
-            const customTheme = {
-                id: 'custom', bg1: cBg1, bg2: cBg2, bg3: '#000000', card: 'rgba(255,255,255,0.1)', accent: cAccent, text: '#ffffff'
-            };
-            applyTheme(customTheme);
-            showToast("Tema Kustom diterapkan!");
-        });
+            // Reset semua style inline
+            diskCover.style.borderRadius = '50%';
+            diskCover.style.background = 'transparent';
+            diskCover.style.boxShadow = 'none';
+            diskCover.style.border = 'none';
+            diskCover.innerHTML = '';
+            
+            customPhotoGroup.classList.add('hidden');
 
-        // Load saved theme
-        const savedTheme = localStorage.getItem('winoro_theme');
-        if (savedTheme) {
-            applyTheme(JSON.parse(savedTheme));
+            if (mode === 'vinyl') {
+                diskCover.className = 'w-full h-full rounded-full flex justify-center items-center relative shadow-2xl transition-all duration-500 vinyl-texture';
+                diskCover.innerHTML = `<div id="disk-center" class="w-[30%] h-[30%] rounded-full dynamic-bg-accent border-2 border-[#333] flex justify-center items-center bg-cover bg-center z-10 shadow-lg"><div class="w-3.5 h-3.5 bg-[#111] rounded-full shadow-inner"></div></div>`;
+                if(isPlaying) diskCover.classList.add('spin');
+            } 
+            else if (mode === 'cassette') {
+                // Merubah bentuk menjadi persegi panjang khusus kaset
+                diskCover.className = 'w-full h-36 sm:h-40 flex justify-center items-center relative transition-all duration-500'; 
+                
+                // HTML Kaset Pita Super Realistis
+                diskCover.innerHTML = `
+                    <div class="absolute inset-0 bg-gradient-to-b from-gray-200 to-gray-400 rounded-2xl shadow-[inset_0_2px_10px_rgba(255,255,255,0.8),_0_15px_30px_rgba(0,0,0,0.5)] border-t border-white p-2 sm:p-2.5 flex flex-col justify-between overflow-hidden">
+                        <!-- Label Kaset -->
+                        <div class="h-[55%] w-full bg-[#f8f5e6] rounded border border-gray-400 flex flex-col justify-between p-1.5 shadow-sm relative">
+                            <div class="h-1/2 w-full bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 opacity-90 rounded-[2px]"></div>
+                            <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[10px] sm:text-xs font-black text-gray-800 tracking-[0.25em] bg-white/70 px-3 py-0.5 rounded shadow-sm backdrop-blur-sm">WINORO MIX</span>
+                        </div>
+                        
+                        <!-- Jendela Pita Kaset -->
+                        <div class="relative w-[75%] h-[35%] bg-gray-900 mx-auto rounded-lg flex items-center justify-between px-3 sm:px-4 border-2 border-gray-600 shadow-[inset_0_5px_15px_rgba(0,0,0,1)]">
+                            <div class="h-0.5 bg-gray-700 w-full absolute top-1/2 left-0 transform -translate-y-1/2 z-0"></div>
+                            
+                            <!-- Roda Kiri -->
+                            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-200 border-[3px] border-gray-800 flex items-center justify-center z-10 ${isPlaying?'spin':''}">
+                                <div class="w-1 h-full bg-gray-800"></div><div class="h-1 w-full bg-gray-800 absolute"></div>
+                            </div>
+                            
+                            <!-- Roda Kanan -->
+                            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-200 border-[3px] border-gray-800 flex items-center justify-center z-10 ${isPlaying?'spin':''}">
+                                <div class="w-1 h-full bg-gray-800"></div><div class="h-1 w-full bg-gray-800 absolute"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Baut Kaset (Detail) -->
+                        <div class="absolute top-2 left-2 w-1.5 h-1.5 rounded-full bg-gray-500 shadow-inner"></div>
+                        <div class="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-gray-500 shadow-inner"></div>
+                        <div class="absolute bottom-2 left-2 w-1.5 h-1.5 rounded-full bg-gray-500 shadow-inner"></div>
+                        <div class="absolute bottom-2 right-2 w-1.5 h-1.5 rounded-full bg-gray-500 shadow-inner"></div>
+                    </div>
+                `;
+            }
+            else if (mode === 'wave') {
+                waveCanvas.classList.remove('hidden');
+                diskCover.innerHTML = `<i class="fas fa-music text-4xl opacity-10 text-white z-0"></i>`; 
+                if(isPlaying) drawWave();
+            }
+            else if (mode === 'photo') {
+                customPhotoGroup.classList.remove('hidden');
+                diskCover.className = 'w-full h-full rounded-full flex justify-center items-center relative transition-all duration-500 shadow-[0_15px_35px_rgba(0,0,0,0.5)]';
+                diskCover.style.border = '4px solid rgba(255,255,255,0.1)';
+                diskCover.style.backgroundSize = 'cover';
+                diskCover.style.backgroundPosition = 'center';
+                
+                const savedImg = localStorage.getItem('winoro_disk_img');
+                if(savedImg) {
+                    diskCover.style.backgroundImage = `url(${savedImg})`;
+                } else {
+                    diskCover.style.backgroundColor = '#1a1c29';
+                    diskCover.innerHTML = `<div class="flex flex-col items-center opacity-30"><i class="fas fa-camera text-4xl mb-2"></i><span class="text-[10px] font-bold">FOTO KUSTOM</span></div>`;
+                }
+                
+                // Ring kilap (Gloss) di atas foto kustom
+                diskCover.innerHTML += `<div class="absolute inset-0 rounded-full pointer-events-none shadow-[inset_0_0_25px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)]"></div>`;
+                
+                if(isPlaying) diskCover.classList.add('spin');
+            }
+            localStorage.setItem('winoro_visual_mode', mode);
         }
 
-        // --- IndexedDB System (Penyimpanan Permanen Offline) ---
+        visualModeSelect.addEventListener('change', (e) => updateVisualMode(e.target.value));
+
+        // Upload Foto Piringan
+        document.getElementById('disk-photo-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    localStorage.setItem('winoro_disk_img', e.target.result);
+                    updateVisualMode('photo');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Upload Background Latar
+        document.getElementById('bg-photo-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    localStorage.setItem('winoro_bg_img', e.target.result);
+                    appBg.style.backgroundImage = `url(${e.target.result})`;
+                    appBg.style.animation = 'none'; // Matikan animasi gradien jika pakai foto
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('reset-bg-btn').addEventListener('click', () => {
+            localStorage.removeItem('winoro_bg_img');
+            appBg.style.backgroundImage = '';
+            appBg.style.animation = 'gradientBG 15s ease infinite';
+        });
+
+        // Booster Volume
+        const boosterSlider = document.getElementById('booster-slider');
+        const boosterVal = document.getElementById('booster-val');
+        boosterSlider.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            boosterVal.innerText = Math.round(val * 100) + '%';
+            if (gainNode) gainNode.gain.value = val;
+            localStorage.setItem('winoro_booster', val);
+        });
+
+        function loadSettings() {
+            const c = localStorage.getItem('winoro_color');
+            if(c) document.documentElement.style.setProperty('--accent', c);
+            
+            const vMode = localStorage.getItem('winoro_visual_mode') || 'vinyl';
+            visualModeSelect.value = vMode;
+            updateVisualMode(vMode);
+            
+            const bg = localStorage.getItem('winoro_bg_img');
+            if(bg) {
+                appBg.style.backgroundImage = `url(${bg})`;
+                appBg.style.animation = 'none';
+            }
+
+            const boost = localStorage.getItem('winoro_booster') || 1;
+            boosterSlider.value = boost;
+            boosterVal.innerText = Math.round(boost * 100) + '%';
+            if(gainNode) gainNode.gain.value = parseFloat(boost);
+        }
+        loadSettings();
+
+        // --- INDEXEDDB (Simpan Lagu) ---
         const dbName = "WinoroMusicDB";
         let db;
 
@@ -393,21 +656,19 @@
         };
         requestDB.onsuccess = (e) => {
             db = e.target.result;
-            loadSongsFromDB(false); // Muat lagu yang tersimpan saat halaman dibuka
+            loadSongsFromDB(false); // Muat saat awal buka (tanpa auto-play)
         };
-        requestDB.onerror = () => showToast("Error mengakses penyimpanan offline.");
 
         function saveFolderToDB(files) {
             showToast("Memproses file audio... Mohon tunggu.");
             const transaction = db.transaction(["songs"], "readwrite");
             const store = transaction.objectStore("songs");
-            store.clear(); // Bersihkan daftar lama (opsional, bisa dihapus jika ingin menggabung)
+            store.clear(); 
 
             let count = 0;
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 if (file.type.startsWith('audio/') || file.name.match(/\.(mp3|wav|m4a|flac|ogg)$/i)) {
-                    // Ekstraksi Artis dan Judul
                     let fileName = file.name.replace(/\.[^/.]+$/, "");
                     let title = fileName;
                     let artist = "Unknown Artist";
@@ -416,27 +677,24 @@
                         artist = parts[0].trim();
                         title = parts.slice(1).join(" - ").trim();
                     }
-                    
-                    store.add({
-                        fileBlob: file, // Menyimpan file asli sebagai Blob secara aman
-                        title: title,
-                        artist: artist
-                    });
+                    store.add({ fileBlob: file, title: title, artist: artist });
                     count++;
                 }
             }
 
             transaction.oncomplete = () => {
                 if(count > 0) {
-                    showToast(`${count} Lagu berhasil disimpan. Siap diputar!`);
-                    loadSongsFromDB(true); // true = Otomatis buka laci setelah import
+                    showToast(`${count} Lagu berhasil diimpor!`);
+                    // MUAT DAN PUTAR OTOMATIS (tanpa buka laci)
+                    loadSongsFromDB(true); 
                 } else {
-                    showToast("Gagal: Tidak ada file musik audio (mp3/wav) di folder tersebut.");
+                    showToast("Tidak ada file musik mp3/wav di folder ini.");
                 }
             };
         }
 
-        function loadSongsFromDB(autoOpenDrawer = false) {
+        // autoPlay parameter menentukan apakah lagu langsung diputar setelah muat
+        function loadSongsFromDB(autoPlay = false) {
             if(!db) return;
             const transaction = db.transaction(["songs"], "readonly");
             const store = transaction.objectStore("songs");
@@ -445,63 +703,49 @@
             request.onsuccess = () => {
                 songs = [];
                 request.result.forEach(record => {
-                    // Membuat URL sementara dari Blob yang tersimpan di IndexedDB
                     const fileUrl = URL.createObjectURL(record.fileBlob);
-                    songs.push({
-                        title: record.title,
-                        artist: record.artist,
-                        url: fileUrl
-                    });
+                    songs.push({ title: record.title, artist: record.artist, url: fileUrl });
                 });
 
                 if (songs.length > 0) {
                     playlistCount.innerText = `${songs.length} Track`;
                     renderPlaylist();
-                    loadSong(0); // Load lagu pertama tanpa langsung memutar
+                    loadSong(0); 
 
-                    // FIX BUG: Otomatis memunculkan laci daftar putar setelah import sukses
-                    if(autoOpenDrawer) {
-                        setTimeout(() => {
-                            playlistDrawer.classList.remove('translate-y-full');
-                            drawerOverlay.classList.remove('opacity-0', 'pointer-events-none');
-                            drawerOverlay.classList.add('opacity-100', 'pointer-events-auto');
-                        }, 500); // Jeda 0.5 detik agar animasi mulus
+                    // JIKA AUTO PLAY AKTIF (setelah pilih folder)
+                    if (autoPlay) {
+                        playSong(); // Putar, tapi laci tetap sembunyi!
                     }
-
                 } else {
                     playlistCount.innerText = `0 Track`;
-                    playlistEl.innerHTML = `<li class="text-sm text-center mt-12 font-light opacity-50">Tidak ada lagu tersimpan.</li>`;
+                    playlistEl.innerHTML = `<li class="text-sm text-center mt-12 font-medium opacity-50">Silakan pilih folder musik melalui menu.</li>`;
                     songTitleEl.innerText = "Belum ada lagu";
-                    songArtistEl.innerText = "Pilih folder musik Anda";
+                    songArtistEl.innerText = "Pilih folder musik";
                 }
             };
         }
 
-        // Hapus Database
         document.getElementById('clear-db-btn').addEventListener('click', () => {
             const tx = db.transaction(["songs"], "readwrite");
             tx.objectStore("songs").clear();
             tx.oncomplete = () => {
-                showToast("Semua lagu telah dihapus dari memori.");
+                showToast("Semua memori lagu dihapus.");
                 songs = [];
-                audioPlayer.pause();
-                isPlaying = false;
-                playBtn.innerHTML = '<i class="fas fa-play ml-1"></i>';
-                diskCover.classList.remove('spin');
+                pauseSong();
                 loadSongsFromDB();
-                settingsModal.classList.add('hidden');
+                closeModals();
             };
         });
 
-        // Event Input File (Import Folder)
+        // Input File
         fileInput.addEventListener('change', (event) => {
             const files = event.target.files; 
             if (files.length === 0) return;
-            dropdownMenu.classList.add('hidden'); // tutup menu
+            dropdownMenu.classList.add('hidden'); 
             saveFolderToDB(files);
         });
 
-        // --- Audio Player Logic ---
+        // --- AUDIO PLAYER LOGIC ---
         function formatTime(seconds) {
             if (isNaN(seconds)) return "00:00";
             const min = Math.floor(seconds / 60);
@@ -515,23 +759,23 @@
                 const li = document.createElement('li');
                 const isActive = index === currentSongIndex;
                 
-                li.className = `p-3.5 rounded-2xl cursor-pointer text-sm transition-all duration-300 flex items-center gap-4 group backdrop-blur-sm
-                    ${isActive ? 'bg-white/10 dynamic-border-accent shadow-lg border-l-4' : 'bg-transparent hover:bg-white/5 border-l-4 border-transparent'}`;
+                li.className = `p-3 rounded-2xl cursor-pointer text-sm transition-all flex items-center gap-4 group 
+                    ${isActive ? 'bg-white/10 border-l-4 dynamic-border-accent' : 'bg-transparent border-l-4 border-transparent hover:bg-white/5'}`;
                 
                 li.innerHTML = `
                     <div class="flex-shrink-0 w-8 text-center">
                         ${isActive && isPlaying 
-                            ? `<div class="flex items-end justify-center gap-[3px] h-5">
-                                 <div class="w-1.5 dynamic-bg-accent h-full animate-[bounce_1s_infinite]"></div>
-                                 <div class="w-1.5 dynamic-bg-accent h-2/3 animate-[bounce_1.2s_infinite]"></div>
-                                 <div class="w-1.5 dynamic-bg-accent h-1/2 animate-[bounce_0.8s_infinite]"></div>
+                            ? `<div class="flex items-end justify-center gap-1 h-4">
+                                 <div class="w-1 dynamic-bg-accent h-full animate-[bounce_1s_infinite]"></div>
+                                 <div class="w-1 dynamic-bg-accent h-2/3 animate-[bounce_1.2s_infinite]"></div>
+                                 <div class="w-1 dynamic-bg-accent h-1/2 animate-[bounce_0.8s_infinite]"></div>
                                </div>` 
-                            : `<span class="text-sm font-bold ${isActive ? 'dynamic-accent' : 'opacity-50 group-hover:opacity-100'}">${index + 1}</span>`
+                            : `<span class="text-sm font-bold ${isActive ? 'dynamic-accent' : 'opacity-50'}">${index + 1}</span>`
                         }
                     </div>
                     <div class="flex flex-col flex-1 min-w-0">
-                        <span class="truncate font-bold ${isActive ? 'text-white text-base' : 'opacity-80 group-hover:opacity-100 text-sm'}">${song.title}</span>
-                        <span class="truncate text-[11px] mt-0.5 ${isActive ? 'dynamic-accent font-medium' : 'opacity-50'}">${song.artist}</span>
+                        <span class="truncate font-bold ${isActive ? 'text-white' : 'opacity-80 group-hover:text-white'}">${song.title}</span>
+                        <span class="truncate text-[11px] mt-0.5 ${isActive ? 'dynamic-accent' : 'opacity-50'}">${song.artist}</span>
                     </div>
                 `;
 
@@ -541,26 +785,32 @@
                 });
                 playlistEl.appendChild(li);
             });
-            
-            const activeItem = playlistEl.children[currentSongIndex];
-            if(activeItem) activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         function loadSong(index) {
             currentSongIndex = index;
-            const song = songs[index];
-            audioPlayer.src = song.url;
-            songTitleEl.innerText = song.title;
-            songArtistEl.innerText = song.artist;
+            audioPlayer.src = songs[index].url;
+            songTitleEl.innerText = songs[index].title;
+            songArtistEl.innerText = songs[index].artist;
             renderPlaylist(); 
         }
 
         function playSong() {
-            if (songs.length === 0) return showToast("Tambahkan lagu terlebih dahulu!");
+            if (songs.length === 0) return showToast("Pilih folder lagu terlebih dahulu!");
+            initAudioEngine(); // Inisialisasi audio API (wajib dilakukan setelah user tap)
+            if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+            
             isPlaying = true;
             audioPlayer.play();
             playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            diskCover.classList.add('spin'); 
+            
+            const mode = document.getElementById('visual-mode').value;
+            if(mode === 'vinyl' || mode === 'photo') diskCover.classList.add('spin');
+            if(mode === 'cassette') {
+                diskCover.querySelectorAll('.rounded-full.bg-gray-200').forEach(el => el.classList.add('spin'));
+            }
+            if(mode === 'wave') drawWave();
+            
             renderPlaylist(); 
         }
 
@@ -568,7 +818,12 @@
             isPlaying = false;
             audioPlayer.pause();
             playBtn.innerHTML = '<i class="fas fa-play ml-1"></i>';
+            
             diskCover.classList.remove('spin'); 
+            // Pastikan roda kaset juga berhenti
+            diskCover.querySelectorAll('.rounded-full.bg-gray-200').forEach(el => el.classList.remove('spin'));
+            cancelAnimationFrame(animationId);
+            
             renderPlaylist();
         }
 
@@ -596,17 +851,11 @@
         audioPlayer.addEventListener('ended', nextSong);
 
         audioPlayer.addEventListener('timeupdate', () => {
-            const currentTime = audioPlayer.currentTime;
-            const duration = audioPlayer.duration;
-            if (duration) {
-                progressBar.value = (currentTime / duration) * 100;
-                currentTimeEl.innerText = formatTime(currentTime);
-                durationTimeEl.innerText = formatTime(duration);
+            if (audioPlayer.duration) {
+                progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                currentTimeEl.innerText = formatTime(audioPlayer.currentTime);
+                durationTimeEl.innerText = formatTime(audioPlayer.duration);
             }
-        });
-
-        audioPlayer.addEventListener('loadedmetadata', () => {
-             durationTimeEl.innerText = formatTime(audioPlayer.duration);
         });
 
         progressBar.addEventListener('input', (e) => {
