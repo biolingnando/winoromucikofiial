@@ -1,33 +1,3 @@
-Let's write out the complete file ensuring all rules are met:
-- Single file.
-- Tailwind CSS via CDN.
-- Font Awesome.
-- crystal glassmorphism theme, dynamic accent color support, background customization, sound booster (for audio), and the new bottom navigation bar + online video feature.
-
-Let's carefully verify the streaming chunks and markers to comply with system instructions.
-Remember the progress markers:
-`` or ``.
-Verb-first rule: must start with an -ing verb (e.g., "Styling", "Initializing", "Configuring", "Rendering").
-
-Let's organize the code:
-1. Head section with Tailwind, FontAwesome, and custom CSS.
-2. Body layout:
-   - Background container (`#app-bg`) & Noise overlay.
-   - Main wrapper (`max-w-md h-[100dvh] flex flex-col p-4 ...`).
-   - Header (Dynamic title "WINORO MUSIC" / "WINORO VIDEO" + Hamburger menu).
-   - View Container 1 (`#music-view`): Contains the disc visualizer, song info, controls.
-   - View Container 2 (`#video-view`): Contains the video input form, video player container, and saved video history list. (Initially hidden).
-   - Bottom Navigation Bar (Tabs: "Musik Offline" and "Video Online").
-   - Overlay & Drawers (Playlist Drawer for music, Settings Modal).
-3. JavaScript logic:
-   - Tab switching logic.
-   - Music player logic (IndexedDB, audio engine, booster, visualizer, modes).
-   - Video player logic (YouTube parser, direct URL handler, saving to localStorage/IndexedDB).
-   - Settings & Themes.
-
-Let's write out the complete, robust, self-contained HTML file.I will now generate the updated single-file application incorporating the new **WINORO VIDEO** online player tab, YouTube & direct video link support, a sleek bottom navigation bar, and preserving all existing music offline capabilities, sound booster, and crystal glassmorphism themes.
-
-```html:WINORO MUSIC & VIDEO PLAYER:index.html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -135,14 +105,14 @@ Let's write out the complete, robust, self-contained HTML file.I will now genera
         }
     </style>
 </head>
-<body class="relative min-h-[100dvh] w-full flex items-center justify-center">
+<body class="relative min-h-[100dvh] w-full flex items-center justify-center overflow-hidden">
 
     <div id="app-bg" class="absolute inset-0 z-0 transition-all duration-700"></div>
     <div class="noise-overlay"></div>
-    <div class="absolute inset-0 z-0 bg-gradient-to-b from-black/10 via-black/40 to-[#07070a] pointer-events-none"></div>
+    <div class="absolute inset-0 z-0 bg-gradient-to-b from-black/20 via-black/50 to-[#050508] pointer-events-none"></div>
 
-    <!-- Main App Layout Container -->
-    <div class="relative z-10 w-full max-w-md h-[100dvh] flex flex-col p-4 sm:p-5 gap-3 mx-auto">
+    <!-- Main App Layout Container - Full width and centered perfectly -->
+    <div class="relative z-10 w-full h-[100dvh] flex flex-col p-3 sm:p-5 gap-3 mx-auto">
         
         <!-- PANEL 1: HEADER & MENU -->
         <div class="glass-panel rounded-2xl p-4 flex justify-between items-center z-20 shrink-0">
