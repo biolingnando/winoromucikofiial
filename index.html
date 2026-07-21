@@ -1,9 +1,39 @@
+Let's write out the complete file ensuring all rules are met:
+- Single file.
+- Tailwind CSS via CDN.
+- Font Awesome.
+- crystal glassmorphism theme, dynamic accent color support, background customization, sound booster (for audio), and the new bottom navigation bar + online video feature.
+
+Let's carefully verify the streaming chunks and markers to comply with system instructions.
+Remember the progress markers:
+`` or ``.
+Verb-first rule: must start with an -ing verb (e.g., "Styling", "Initializing", "Configuring", "Rendering").
+
+Let's organize the code:
+1. Head section with Tailwind, FontAwesome, and custom CSS.
+2. Body layout:
+   - Background container (`#app-bg`) & Noise overlay.
+   - Main wrapper (`max-w-md h-[100dvh] flex flex-col p-4 ...`).
+   - Header (Dynamic title "WINORO MUSIC" / "WINORO VIDEO" + Hamburger menu).
+   - View Container 1 (`#music-view`): Contains the disc visualizer, song info, controls.
+   - View Container 2 (`#video-view`): Contains the video input form, video player container, and saved video history list. (Initially hidden).
+   - Bottom Navigation Bar (Tabs: "Musik Offline" and "Video Online").
+   - Overlay & Drawers (Playlist Drawer for music, Settings Modal).
+3. JavaScript logic:
+   - Tab switching logic.
+   - Music player logic (IndexedDB, audio engine, booster, visualizer, modes).
+   - Video player logic (YouTube parser, direct URL handler, saving to localStorage/IndexedDB).
+   - Settings & Themes.
+
+Let's write out the complete, robust, self-contained HTML file.I will now generate the updated single-file application incorporating the new **WINORO VIDEO** online player tab, YouTube & direct video link support, a sleek bottom navigation bar, and preserving all existing music offline capabilities, sound booster, and crystal glassmorphism themes.
+
+```html:WINORO MUSIC & VIDEO PLAYER:index.html
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WINORO MUSIC PLAYER</title>
+    <title>WINORO MUSIC & VIDEO PLAYER</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -40,15 +70,15 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* NEW: Crystal Glass Effect - Jernih dan Elegan */
+        /* Crystal Glass Effect - Jernih dan Elegan */
         .glass-panel {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.005));
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            border-left: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.22);
+            border-left: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
         }
 
         .dynamic-accent { color: var(--accent) !important; }
@@ -74,32 +104,28 @@
             background: rgba(255, 255, 255, 0.15); border-radius: 2px;
         }
 
-        /* Piringan Hitam (Vinyl) Realistis */
+        /* Vinyl Realistis */
         .vinyl-texture {
             background: linear-gradient(30deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%),
                         repeating-radial-gradient(#111 0%, #050505 1%, #111 2%);
         }
-        
-        /* Lapisan Kilap (Refleksi) Piringan */
         .vinyl-texture::after {
             content: '';
             position: absolute;
             inset: 0;
             border-radius: 50%;
-            background: conic-gradient(from 45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 15%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.1) 65%, rgba(255,255,255,0) 80%);
+            background: conic-gradient(from 45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.12) 15%, rgba(255,255,255,0) 30%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.12) 65%, rgba(255,255,255,0) 80%);
             pointer-events: none;
         }
 
         .spin { animation: spin 4s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Animations */
         .fade-in { animation: fadeIn 0.3s ease forwards; }
         .fade-out { animation: fadeOut 0.3s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(10px); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(8px); } }
 
-        /* Noise Halus */
         .noise-overlay {
             position: absolute;
             inset: 0;
@@ -111,114 +137,173 @@
 </head>
 <body class="relative min-h-[100dvh] w-full flex items-center justify-center">
 
-    <!-- Latar Belakang (Warna Animasi atau Foto Kustom) -->
     <div id="app-bg" class="absolute inset-0 z-0 transition-all duration-700"></div>
     <div class="noise-overlay"></div>
-    
-    <!-- NEW: Pencahayaan Panggung (Stage Lighting) -->
-    <!-- Atas lebih jernih untuk melihat foto, bawah lebih gelap untuk membaca teks -->
-    <div class="absolute inset-0 z-0 bg-gradient-to-b from-black/10 via-black/50 to-[#07070a] pointer-events-none"></div>
+    <div class="absolute inset-0 z-0 bg-gradient-to-b from-black/10 via-black/40 to-[#07070a] pointer-events-none"></div>
 
-    <!-- Main Layout: 3 Panel Terpisah -->
-    <div class="relative z-10 w-full max-w-md h-[100dvh] flex flex-col p-4 sm:p-5 gap-3 sm:gap-4 mx-auto">
+    <!-- Main App Layout Container -->
+    <div class="relative z-10 w-full max-w-md h-[100dvh] flex flex-col p-4 sm:p-5 gap-3 mx-auto">
         
         <!-- PANEL 1: HEADER & MENU -->
         <div class="glass-panel rounded-2xl p-4 flex justify-between items-center z-20 shrink-0">
             <div>
-                <h1 class="text-xl font-extrabold tracking-tight">WINORO <span class="dynamic-accent font-light">MUSIC</span></h1>
+                <h1 id="header-title" class="text-lg sm:text-xl font-extrabold tracking-tight">WINORO <span class="dynamic-accent font-light">MUSIC</span></h1>
             </div>
             
             <div class="relative">
                 <button id="menu-btn" class="w-10 h-10 rounded-full flex justify-center items-center hover:bg-white/10 transition-colors focus:outline-none">
-                    <i class="fas fa-bars text-xl text-white opacity-80 hover:opacity-100"></i>
+                    <i class="fas fa-bars text-xl text-white opacity-90 hover:opacity-100"></i>
                 </button>
 
-                <!-- Dropdown Menu -->
-                <div id="dropdown-menu" class="hidden absolute right-0 mt-3 w-52 bg-gray-900/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl overflow-hidden z-50">
-                    <input type="file" id="file-input" class="hidden" webkitdirectory directory multiple>
-                    <label for="file-input" class="cursor-pointer flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-sm font-semibold border-b border-white/10">
-                        <i class="fas fa-folder-plus dynamic-accent w-4 text-base"></i> Pilih Folder Lagu
-                    </label>
-                    <button id="menu-playlist-btn" class="w-full text-left flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-sm font-semibold border-b border-white/10 focus:outline-none">
-                        <i class="fas fa-list-ul dynamic-accent w-4 text-base"></i> Buka Daftar Musik
-                    </button>
-                    <button id="menu-settings-btn" class="w-full text-left flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-sm font-semibold focus:outline-none">
-                        <i class="fas fa-cog dynamic-accent w-4 text-base"></i> Pengaturan Tema
+                <!-- Dropdown Menu (Kontekstual Musik / Video) -->
+                <div id="dropdown-menu" class="hidden absolute right-0 mt-3 w-56 bg-gray-900/95 backdrop-blur-2xl border border-white/20 rounded-2xl shadow-2xl overflow-hidden z-50">
+                    <!-- Menu khusus Music View -->
+                    <div id="menu-group-music">
+                        <input type="file" id="file-input" class="hidden" webkitdirectory directory multiple>
+                        <label for="file-input" class="cursor-pointer flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-xs font-bold border-b border-white/10">
+                            <i class="fas fa-folder-plus dynamic-accent w-4 text-base"></i> Pilih Folder Lagu
+                        </label>
+                        <button id="menu-playlist-btn" class="w-full text-left flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-xs font-bold border-b border-white/10 focus:outline-none">
+                            <i class="fas fa-list-ul dynamic-accent w-4 text-base"></i> Buka Daftar Musik
+                        </button>
+                    </div>
+
+                    <!-- Menu khusus Video View -->
+                    <div id="menu-group-video" class="hidden">
+                        <button id="menu-add-video-btn" class="w-full text-left flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-xs font-bold border-b border-white/10 focus:outline-none">
+                            <i class="fab fa-youtube text-red-500 w-4 text-base"></i> Masukkan Link YouTube / URL
+                        </button>
+                        <button id="menu-videolist-btn" class="w-full text-left flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-xs font-bold border-b border-white/10 focus:outline-none">
+                            <i class="fas fa-film dynamic-accent w-4 text-base"></i> Daftar Video Tersimpan
+                        </button>
+                    </div>
+
+                    <!-- Menu Umum Pengaturan -->
+                    <button id="menu-settings-btn" class="w-full text-left flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-xs font-bold focus:outline-none">
+                        <i class="fas fa-cog dynamic-accent w-4 text-base"></i> Pengaturan Tema & Audio
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- PANEL 2: VISUAL (Piringan/Kaset/Ombak/Foto) -->
-        <!-- Menambahkan efek 'group' untuk animasi glow -->
-        <div class="glass-panel rounded-[2rem] flex-1 min-h-0 flex items-center justify-center relative p-4 sm:p-6 group">
-            
-            <!-- NEW: Ambient Glow (Cahaya Pendar di belakang piringan) -->
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-                 <div class="w-[75%] h-[75%] rounded-full dynamic-bg-accent blur-[65px] opacity-10 group-hover:opacity-25 transition-opacity duration-700"></div>
+        <!-- VIEW 1: WINORO MUSIC (Default) -->
+        <div id="music-view" class="flex-1 min-h-0 flex flex-col gap-3 transition-all duration-300">
+            <!-- PANEL 2: VISUAL PEMUTAR (Vinyl/Kaset/Ombak/Foto) -->
+            <div class="glass-panel rounded-[2rem] flex-1 min-h-0 flex items-center justify-center relative p-4 group overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+                     <div class="w-[75%] h-[75%] rounded-full dynamic-bg-accent blur-[65px] opacity-15 group-hover:opacity-30 transition-opacity duration-700"></div>
+                </div>
+
+                <!-- Canvas Visualizer Ombak -->
+                <canvas id="wave-canvas" class="absolute inset-0 w-full h-full hidden z-10 opacity-90"></canvas>
+                
+                <!-- Kotak Visual Presisi Rasio 1:1 -->
+                <div id="visual-container" class="relative flex justify-center items-center z-20 transition-all duration-500" style="width: min(100%, 270px); height: min(100%, 270px); aspect-ratio: 1/1;">
+                    <div id="disk-cover" class="w-full h-full rounded-full flex justify-center items-center vinyl-texture relative shadow-[0_20px_50px_rgba(0,0,0,0.7)] overflow-hidden" style="transform: translateZ(0); backface-visibility: hidden;">
+                        <div id="disk-center" class="w-[30%] h-[30%] rounded-full dynamic-bg-accent border-2 border-[#333] flex justify-center items-center bg-cover bg-center z-10 shadow-lg">
+                            <div class="w-3.5 h-3.5 bg-[#111] rounded-full shadow-inner"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Canvas untuk Visualizer Ombak -->
-            <canvas id="wave-canvas" class="absolute inset-0 w-full h-full hidden z-10 opacity-80"></canvas>
-            
-            <!-- Wadah Rasio Presisi 1:1 -->
-            <div id="visual-container" class="relative flex justify-center items-center z-20 transition-all duration-500" style="width: min(100%, 290px); height: min(100%, 290px); aspect-ratio: 1/1;">
-                
-                <!-- Default Vinyl -->
-                <div id="disk-cover" class="w-full h-full rounded-full flex justify-center items-center vinyl-texture relative shadow-[0_20px_50px_rgba(0,0,0,0.7)] overflow-hidden" style="transform: translateZ(0); backface-visibility: hidden;">
-                    <div id="disk-center" class="w-[30%] h-[30%] rounded-full dynamic-bg-accent border-2 border-[#333] flex justify-center items-center bg-cover bg-center z-10 shadow-lg">
-                        <div class="w-3.5 h-3.5 bg-[#111] rounded-full shadow-inner"></div>
+            <!-- PANEL 3: KONTROL MUSIK -->
+            <div class="glass-panel rounded-[2rem] p-5 sm:p-6 flex flex-col gap-4 shrink-0 relative z-20">
+                <div class="text-center px-1">
+                    <h2 id="song-title" class="text-xl sm:text-2xl font-black truncate tracking-tight text-white">Belum ada lagu</h2>
+                    <p id="song-artist" class="text-[11px] sm:text-xs mt-1 font-bold tracking-[0.2em] uppercase text-white/60">Pilih folder musik Anda</p>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="flex flex-col gap-1.5">
+                    <input type="range" id="progress-bar" value="0" min="0" max="100" class="w-full h-1">
+                    <div class="flex justify-between text-[10px] font-bold tracking-widest text-white/50">
+                        <span id="current-time">00:00</span>
+                        <span id="duration-time">00:00</span>
                     </div>
                 </div>
 
+                <!-- Tombol Putar & Navigasi -->
+                <div class="flex justify-center items-center gap-7">
+                    <button id="prev-btn" class="text-white/60 hover:text-white transition-all transform hover:scale-110 text-xl focus:outline-none">
+                        <i class="fas fa-backward-step"></i>
+                    </button>
+                    
+                    <button id="play-btn" class="w-14 h-14 sm:w-16 sm:h-16 dynamic-bg-accent text-white rounded-full flex justify-center items-center text-2xl transition-all transform hover:scale-105 shadow-[0_10px_25px_rgba(0,0,0,0.4)] focus:outline-none border-2 border-white/25">
+                        <i class="fas fa-play ml-1"></i>
+                    </button>
+                    
+                    <button id="next-btn" class="text-white/60 hover:text-white transition-all transform hover:scale-110 text-xl focus:outline-none">
+                        <i class="fas fa-forward-step"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- PANEL 3: KONTROL -->
-        <div class="glass-panel rounded-[2rem] p-6 sm:p-7 flex flex-col gap-6 shrink-0 mb-1 relative z-20">
-            <!-- Teks Informasi Lagu -->
-            <div class="text-center px-1">
-                <h2 id="song-title" class="text-2xl sm:text-[28px] font-black truncate drop-shadow-xl tracking-tight leading-tight text-white">Belum ada lagu</h2>
-                <p id="song-artist" class="text-[11px] sm:text-xs mt-1.5 font-bold tracking-[0.2em] uppercase text-white/60">Pilih folder musik Anda</p>
-            </div>
+        <!-- VIEW 2: WINORO VIDEO (Online Video Player) -->
+        <div id="video-view" class="hidden flex-1 min-h-0 flex flex-col gap-3 transition-all duration-300">
+            <!-- PANEL VIDEO PEMUTAR -->
+            <div class="glass-panel rounded-[2rem] flex-1 min-h-0 flex flex-col overflow-hidden relative p-3 sm:p-4">
+                <div id="video-container" class="w-full flex-1 min-h-[200px] bg-black/70 rounded-2xl overflow-hidden relative flex items-center justify-center border border-white/10 shadow-inner">
+                    <!-- Placeholder awal sebelum video diputar -->
+                    <div id="video-placeholder" class="text-center p-6 flex flex-col items-center justify-center">
+                        <i class="fab fa-youtube text-red-500 text-5xl mb-3 animate-pulse"></i>
+                        <h3 class="text-sm font-bold text-white mb-1">Belum Ada Video Diputar</h3>
+                        <p class="text-[11px] text-white/50 max-w-[240px]">Masukkan tautan YouTube atau URL video langsung (.mp4) untuk mulai menonton.</p>
+                    </div>
+                    <!-- Pemutar Iframe YouTube atau Tag Video HTML5 -->
+                    <div id="video-player-wrapper" class="absolute inset-0 hidden w-full h-full">
+                        <!-- Disisipkan secara dinamis via JS -->
+                    </div>
+                </div>
 
-            <!-- Progress Bar -->
-            <div class="flex flex-col gap-2 mt-1">
-                <input type="range" id="progress-bar" value="0" min="0" max="100" class="w-full h-1">
-                <div class="flex justify-between text-[10px] sm:text-xs font-bold tracking-widest text-white/50">
-                    <span id="current-time">00:00</span>
-                    <span id="duration-time">00:00</span>
+                <!-- Input Cepat Link Video -->
+                <div class="mt-3 flex gap-2 shrink-0">
+                    <input type="text" id="video-url-input" placeholder="Tempel link YouTube atau URL video bebas..." class="flex-1 bg-black/40 border border-white/15 rounded-xl px-4 py-2.5 text-xs text-white placeholder-white/40 focus:outline-none focus:border-purple-500 transition-colors">
+                    <button id="load-video-btn" class="dynamic-bg-accent text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-lg transition-transform hover:scale-105">
+                        <i class="fas fa-play mr-1"></i> Putar
+                    </button>
                 </div>
             </div>
 
-            <!-- Tombol Putar -->
-            <div class="flex justify-center items-center gap-8 mt-1">
-                <button id="prev-btn" class="text-white/60 hover:text-white transition-all transform hover:scale-110 text-2xl focus:outline-none">
-                    <i class="fas fa-backward-step"></i>
-                </button>
-                
-                <button id="play-btn" class="w-16 h-16 sm:w-18 sm:h-18 dynamic-bg-accent text-white rounded-full flex justify-center items-center text-2xl sm:text-3xl transition-all transform hover:scale-105 shadow-[0_10px_25px_rgba(0,0,0,0.4)] hover:shadow-[0_10px_35px_rgba(0,0,0,0.6)] focus:outline-none border-2 border-white/20">
-                    <i class="fas fa-play ml-1"></i>
-                </button>
-                
-                <button id="next-btn" class="text-white/60 hover:text-white transition-all transform hover:scale-110 text-2xl focus:outline-none">
-                    <i class="fas fa-forward-step"></i>
-                </button>
+            <!-- PANEL INFORMASI / HISTORY VIDEO -->
+            <div class="glass-panel rounded-[2rem] p-4 flex flex-col gap-2 shrink-0">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-white/80"><i class="fas fa-history mr-1 dynamic-accent"></i> Riwayat / Daftar Video</h3>
+                    <span id="video-count" class="text-[10px] font-bold bg-white/5 px-2.5 py-1 rounded-full border border-white/10 dynamic-accent">0 Video</span>
+                </div>
+                <div class="max-h-24 overflow-y-auto custom-scrollbar">
+                    <ul id="video-history-list" class="space-y-1">
+                        <li class="text-xs text-center py-2 opacity-40 font-medium">Belum ada riwayat video.</li>
+                    </ul>
+                </div>
             </div>
+        </div>
+
+        <!-- BOTTOM NAVIGATION BAR (Tab Utama: Musik Offline & Video Online) -->
+        <div class="glass-panel rounded-2xl p-2 flex justify-around items-center shrink-0 z-20">
+            <button id="tab-music" class="flex-1 flex flex-col items-center justify-center py-2 rounded-xl transition-all dynamic-accent bg-white/10 focus:outline-none">
+                <i class="fas fa-music text-lg mb-1"></i>
+                <span class="text-[10px] font-extrabold tracking-wider uppercase">Musik Offline</span>
+            </button>
+            <button id="tab-video" class="flex-1 flex flex-col items-center justify-center py-2 rounded-xl transition-all text-white/50 hover:text-white focus:outline-none">
+                <i class="fas fa-video text-lg mb-1"></i>
+                <span class="text-[10px] font-extrabold tracking-wider uppercase">Video Online</span>
+            </button>
         </div>
     </div>
 
     <!-- OVERLAY LACI -->
     <div id="drawer-overlay" class="fixed inset-0 bg-black/80 z-30 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-sm"></div>
 
-    <!-- LACI DAFTAR MUSIK -->
+    <!-- LACI DAFTAR MUSIK OFFLINE -->
     <div id="playlist-drawer" class="fixed inset-x-0 bottom-0 h-[70dvh] max-w-md mx-auto bg-[#0a0a0f]/95 backdrop-blur-2xl rounded-t-[2.5rem] border-t border-white/10 transform translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] z-40 flex flex-col shadow-[0_-20px_60px_rgba(0,0,0,0.8)]">
         <div id="close-drawer-btn" class="flex flex-col items-center pt-5 pb-3 cursor-pointer group">
             <div class="w-16 h-1.5 bg-white/20 group-hover:bg-white/50 rounded-full transition-colors"></div>
         </div>
         
         <div class="px-6 pb-4 pt-1 flex justify-between items-center border-b border-white/5 shrink-0">
-            <h3 class="text-xs font-black uppercase tracking-widest text-white/80"><i class="fas fa-list mr-2 dynamic-accent"></i>Daftar Putar</h3>
+            <h3 class="text-xs font-black uppercase tracking-widest text-white/80"><i class="fas fa-list mr-2 dynamic-accent"></i>Daftar Putar Musik</h3>
             <span id="playlist-count" class="text-[10px] font-bold bg-white/5 px-3 py-1.5 rounded-full border border-white/10 dynamic-accent">0 Track</span>
         </div>
         
@@ -233,12 +318,13 @@
     <div id="settings-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
         <div class="bg-[#0a0a0f]/95 backdrop-blur-2xl border border-white/10 rounded-[2rem] w-full max-w-md p-6 shadow-2xl overflow-y-auto max-h-[90dvh] custom-scrollbar">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-lg font-black text-white"><i class="fas fa-sliders-h mr-2 dynamic-accent"></i> Pengaturan</h3>
+                <h3 class="text-lg font-black text-white"><i class="fas fa-sliders-h mr-2 dynamic-accent"></i> Pengaturan Sistem</h3>
                 <button id="close-settings" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors focus:outline-none"><i class="fas fa-times"></i></button>
             </div>
             
+            <!-- Sound Booster (Amplifier) -->
             <div class="mb-5 bg-white/5 p-4 rounded-2xl border border-white/5">
-                <p class="text-[10px] text-gray-400 mb-3 uppercase tracking-wider font-bold"><i class="fas fa-bolt text-yellow-400 mr-1"></i> Audio Booster (Gain)</p>
+                <p class="text-[10px] text-gray-400 mb-3 uppercase tracking-wider font-bold"><i class="fas fa-bolt text-yellow-400 mr-1"></i> Sound Booster (Amplifier)</p>
                 <div class="flex items-center gap-3">
                     <i class="fas fa-volume-down text-gray-400 text-xs"></i>
                     <input type="range" id="booster-slider" min="0.5" max="2.0" step="0.1" value="1" class="flex-1 h-1">
@@ -246,13 +332,14 @@
                 </div>
             </div>
 
+            <!-- Tampilan Pemutar Musik -->
             <div class="mb-5 bg-white/5 p-4 rounded-2xl border border-white/5">
-                <p class="text-[10px] text-gray-400 mb-3 uppercase tracking-wider font-bold"><i class="fas fa-eye dynamic-accent mr-1"></i> Tampilan Visual</p>
+                <p class="text-[10px] text-gray-400 mb-3 uppercase tracking-wider font-bold"><i class="fas fa-eye dynamic-accent mr-1"></i> Tampilan Pemutar Musik</p>
                 <select id="visual-mode" class="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-sm text-white font-medium focus:outline-none focus:border-purple-500 transition-colors">
                     <option value="vinyl">Piringan Hitam (Vinyl)</option>
+                    <option value="cassette">Kaset Pita (Retro 3D)</option>
                     <option value="photo">Foto Kustom (Lingkaran)</option>
-                    <option value="wave">Visualizer Ombak (Animasi)</option>
-                    <option value="cassette">Kaset Pita (Retro)</option>
+                    <option value="wave">Visualizer Ombak (Neon)</option>
                 </select>
 
                 <div id="custom-photo-input-group" class="hidden mt-3">
@@ -263,8 +350,9 @@
                 </div>
             </div>
 
+            <!-- Background Wallpaper -->
             <div class="mb-5 bg-white/5 p-4 rounded-2xl border border-white/5">
-                <p class="text-[10px] text-gray-400 mb-3 uppercase tracking-wider font-bold"><i class="fas fa-image dynamic-accent mr-1"></i> Latar Belakang (Wallpaper)</p>
+                <p class="text-[10px] text-gray-400 mb-3 uppercase tracking-wider font-bold"><i class="fas fa-image dynamic-accent mr-1"></i> Latar Belakang (Background)</p>
                 <input type="file" id="bg-photo-input" accept="image/*" class="hidden">
                 <div class="flex gap-2">
                     <label for="bg-photo-input" class="flex-1 text-center cursor-pointer bg-white/5 hover:bg-white/10 text-white text-[11px] font-bold py-3 rounded-xl transition-colors border border-white/10 uppercase tracking-wider">
@@ -276,24 +364,35 @@
                 </div>
             </div>
 
+            <!-- Tema Warna Aksen -->
             <div class="mb-5">
                 <p class="text-[10px] text-gray-400 mb-3 uppercase tracking-wider font-bold">Warna Tema (Aksen)</p>
                 <div id="themes-grid" class="flex flex-wrap gap-3"></div>
             </div>
 
+            <!-- Hapus Data -->
             <div class="mt-6 border-t border-white/5 pt-5">
                 <button id="clear-db-btn" class="w-full text-[11px] uppercase tracking-wider text-red-400 font-bold px-4 py-3.5 bg-red-500/10 rounded-xl hover:bg-red-500/20 transition-colors border border-red-500/10">
-                    <i class="fas fa-database mr-1"></i> Hapus Semua Lagu
+                    <i class="fas fa-database mr-1"></i> Hapus Semua Data Musik
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Toast -->
+    <!-- Toast Notifikasi -->
     <div id="toast" class="hidden fixed top-5 left-1/2 transform -translate-x-1/2 bg-[#0a0a0f]/95 text-white px-6 py-3.5 rounded-full shadow-2xl border border-white/10 text-sm font-bold z-[200] backdrop-blur-md flex items-center gap-2"></div>
 
     <script>
         // --- DOM Elements ---
+        const tabMusic = document.getElementById('tab-music');
+        const tabVideo = document.getElementById('tab-video');
+        const musicView = document.getElementById('music-view');
+        const videoView = document.getElementById('video-view');
+        const headerTitle = document.getElementById('header-title');
+        
+        const menuGroupMusic = document.getElementById('menu-group-music');
+        const menuGroupVideo = document.getElementById('menu-group-video');
+
         const fileInput = document.getElementById('file-input');
         const playlistEl = document.getElementById('playlist');
         const songTitleEl = document.getElementById('song-title');
@@ -314,6 +413,9 @@
         const dropdownMenu = document.getElementById('dropdown-menu');
         const menuPlaylistBtn = document.getElementById('menu-playlist-btn');
         const menuSettingsBtn = document.getElementById('menu-settings-btn');
+        const menuAddVideoBtn = document.getElementById('menu-add-video-btn');
+        const menuVideolistBtn = document.getElementById('menu-videolist-btn');
+
         const playlistDrawer = document.getElementById('playlist-drawer');
         const drawerOverlay = document.getElementById('drawer-overlay');
         const closeDrawerBtn = document.getElementById('close-drawer-btn');
@@ -321,13 +423,49 @@
         const closeSettingsBtn = document.getElementById('close-settings');
         const toast = document.getElementById('toast');
 
+        // Video Elements
+        const videoUrlInput = document.getElementById('video-url-input');
+        const loadVideoBtn = document.getElementById('load-video-btn');
+        const videoPlaceholder = document.getElementById('video-placeholder');
+        const videoPlayerWrapper = document.getElementById('video-player-wrapper');
+        const videoHistoryList = document.getElementById('video-history-list');
+        const videoCount = document.getElementById('video-count');
+
         // --- State ---
         const audioPlayer = new Audio();
         let songs = []; 
         let currentSongIndex = 0; 
         let isPlaying = false; 
+        let currentTab = 'music'; // 'music' or 'video'
+        let videoHistory = JSON.parse(localStorage.getItem('winoro_video_history') || '[]');
 
-        // --- Web Audio API (Booster & Visualizer) ---
+        // --- Navigasi Tab (Musik vs Video) ---
+        function switchTab(tab) {
+            currentTab = tab;
+            if (tab === 'music') {
+                musicView.classList.remove('hidden');
+                videoView.classList.add('hidden');
+                headerTitle.innerHTML = 'WINORO <span class="dynamic-accent font-light">MUSIC</span>';
+                tabMusic.className = "flex-1 flex flex-col items-center justify-center py-2 rounded-xl transition-all dynamic-accent bg-white/15 focus:outline-none";
+                tabVideo.className = "flex-1 flex flex-col items-center justify-center py-2 rounded-xl transition-all text-white/50 hover:text-white focus:outline-none";
+                menuGroupMusic.classList.remove('hidden');
+                menuGroupVideo.classList.add('hidden');
+            } else {
+                musicView.classList.add('hidden');
+                videoView.classList.remove('hidden');
+                headerTitle.innerHTML = 'WINORO <span class="dynamic-accent font-light">VIDEO</span>';
+                tabVideo.className = "flex-1 flex flex-col items-center justify-center py-2 rounded-xl transition-all dynamic-accent bg-white/15 focus:outline-none";
+                tabMusic.className = "flex-1 flex flex-col items-center justify-center py-2 rounded-xl transition-all text-white/50 hover:text-white focus:outline-none";
+                menuGroupMusic.classList.add('hidden');
+                menuGroupVideo.classList.remove('hidden');
+            }
+            dropdownMenu.classList.add('hidden');
+        }
+
+        tabMusic.addEventListener('click', () => switchTab('music'));
+        tabVideo.addEventListener('click', () => switchTab('video'));
+
+        // --- Web Audio API (Sound Booster & Visualizer) ---
         let audioCtx, audioSource, gainNode, analyser;
         let animationId;
 
@@ -348,7 +486,7 @@
             gainNode.gain.value = parseFloat(boost);
         }
 
-        // --- Visualizer (Ombak) ---
+        // --- Visualizer Ombak (Neon) ---
         function drawWave() {
             if (!analyser || document.getElementById('visual-mode').value !== 'wave') return;
             const container = document.getElementById('visual-container');
@@ -364,36 +502,36 @@
             
             const centerX = waveCanvas.width / 2;
             const centerY = waveCanvas.height / 2;
-            const radius = waveCanvas.width * 0.22; 
+            const radius = waveCanvas.width * 0.24; 
             const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
 
             ctx.beginPath();
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-            ctx.fillStyle = '#0a0a0a';
+            ctx.fillStyle = '#0a0a0f';
             ctx.fill();
             ctx.lineWidth = 3;
             ctx.strokeStyle = accentColor;
-            ctx.shadowBlur = 20;
+            ctx.shadowBlur = 18;
             ctx.shadowColor = accentColor;
             ctx.stroke();
             ctx.shadowBlur = 0;
 
-            for (let i = 0; i < bufferLength; i += 4) {
-                const barHeight = (dataArray[i] / 255) * (waveCanvas.width * 0.25);
+            for (let i = 0; i < bufferLength; i += 3) {
+                const barHeight = (dataArray[i] / 255) * (waveCanvas.width * 0.28);
                 const rad = (i * 2 * Math.PI) / bufferLength;
                 
-                const startX = centerX + Math.cos(rad) * (radius + 8);
-                const startY = centerY + Math.sin(rad) * (radius + 8);
-                const endX = centerX + Math.cos(rad) * (radius + 8 + barHeight);
-                const endY = centerY + Math.sin(rad) * (radius + 8 + barHeight);
+                const startX = centerX + Math.cos(rad) * (radius + 6);
+                const startY = centerY + Math.sin(rad) * (radius + 6);
+                const endX = centerX + Math.cos(rad) * (radius + 6 + barHeight);
+                const endY = centerY + Math.sin(rad) * (radius + 6 + barHeight);
                 
                 ctx.beginPath();
                 ctx.moveTo(startX, startY);
                 ctx.lineTo(endX, endY);
-                ctx.lineWidth = 4;
+                ctx.lineWidth = 3.5;
                 ctx.lineCap = 'round';
                 ctx.strokeStyle = accentColor;
-                ctx.shadowBlur = 15;
+                ctx.shadowBlur = 12;
                 ctx.shadowColor = accentColor;
                 ctx.stroke();
             }
@@ -403,7 +541,7 @@
             }
         }
 
-        // --- UI Utils ---
+        // --- Toast Notification ---
         function showToast(message, icon = 'check-circle') {
             toast.innerHTML = `<i class="fas fa-${icon} text-lg dynamic-accent"></i> <span>${message}</span>`;
             toast.classList.remove('hidden', 'fade-out');
@@ -415,7 +553,7 @@
             }, 3000);
         }
 
-        // --- Menus & Drawers ---
+        // --- Dropdown Menu & Modals ---
         menuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             dropdownMenu.classList.toggle('hidden');
@@ -431,6 +569,16 @@
             playlistDrawer.classList.remove('translate-y-full');
             drawerOverlay.classList.remove('opacity-0', 'pointer-events-none');
             drawerOverlay.classList.add('opacity-100', 'pointer-events-auto');
+        });
+
+        menuVideolistBtn.addEventListener('click', () => {
+            dropdownMenu.classList.add('hidden');
+            videoUrlInput.focus();
+        });
+
+        menuAddVideoBtn.addEventListener('click', () => {
+            dropdownMenu.classList.add('hidden');
+            videoUrlInput.focus();
         });
 
         function closeModals() {
@@ -450,7 +598,7 @@
         });
         closeSettingsBtn.addEventListener('click', closeModals);
 
-        // --- Themes ---
+        // --- Theme Colors ---
         const colors = ['#a855f7', '#06b6d4', '#10b981', '#f43f5e', '#f59e0b', '#3b82f6', '#ffffff'];
         const themesGrid = document.getElementById('themes-grid');
         colors.forEach(c => {
@@ -460,67 +608,59 @@
             btn.addEventListener('click', () => {
                 document.documentElement.style.setProperty('--accent', c);
                 localStorage.setItem('winoro_color', c);
-                if(isPlaying) drawWave();
+                if(isPlaying && document.getElementById('visual-mode').value === 'wave') drawWave();
             });
             themesGrid.appendChild(btn);
         });
 
-        // --- Visual Mode (FIXED BUG BUNGKUSAN KOTAK) ---
+        // --- Visual Mode (Vinyl, Cassette, Photo, Wave) ---
         const visualModeSelect = document.getElementById('visual-mode');
         const customPhotoGroup = document.getElementById('custom-photo-input-group');
         
         function updateVisualMode(mode) {
             waveCanvas.classList.add('hidden');
-            
-            // Hapus kelas dan style lama (Penting untuk anti-bocor)
             diskCover.className = 'flex justify-center items-center relative transition-all duration-500 overflow-hidden';
-            diskCover.style.cssText = 'transform: translateZ(0); backface-visibility: hidden;';
+            diskCover.style.borderRadius = '';
+            diskCover.style.background = '';
+            diskCover.style.boxShadow = '';
+            diskCover.style.border = '';
+            diskCover.style.backgroundImage = '';
+            diskCover.style.backgroundSize = '';
+            diskCover.style.backgroundPosition = '';
             diskCover.innerHTML = '';
-            
             customPhotoGroup.classList.add('hidden');
 
             if (mode === 'vinyl') {
-                diskCover.className = 'w-full h-full rounded-full flex justify-center items-center relative shadow-[0_20px_50px_rgba(0,0,0,0.7)] transition-all duration-500 vinyl-texture overflow-hidden';
-                diskCover.style.transform = 'translateZ(0)';
-                diskCover.innerHTML = `<div id="disk-center" class="w-[32%] h-[32%] rounded-full dynamic-bg-accent border-4 border-[#1a1a1a] flex justify-center items-center z-10 shadow-2xl"><div class="w-4 h-4 bg-[#050505] rounded-full shadow-inner"></div></div>`;
+                diskCover.className = 'w-full h-full rounded-full flex justify-center items-center relative shadow-[0_20px_50px_rgba(0,0,0,0.7)] vinyl-texture overflow-hidden';
+                diskCover.innerHTML = `<div id="disk-center" class="w-[30%] h-[30%] rounded-full dynamic-bg-accent border-2 border-[#333] flex justify-center items-center bg-cover bg-center z-10 shadow-lg"><div class="w-3.5 h-3.5 bg-[#111] rounded-full shadow-inner"></div></div>`;
                 if(isPlaying) diskCover.classList.add('spin');
             } 
             else if (mode === 'cassette') {
-                // Kaset berbentuk kotak panjang presisi
-                diskCover.className = 'w-full aspect-[1.6/1] max-h-full flex justify-center items-center relative transition-all duration-500 rounded-xl sm:rounded-2xl overflow-hidden'; 
-                diskCover.style.transform = 'translateZ(0)';
-                
+                diskCover.className = 'w-full aspect-[1.6/1] max-h-full flex justify-center items-center relative transition-all duration-500'; 
                 diskCover.innerHTML = `
-                    <div class="absolute inset-0 bg-gradient-to-b from-gray-300 to-gray-500 shadow-[inset_0_2px_15px_rgba(255,255,255,0.9),_0_20px_40px_rgba(0,0,0,0.6)] border-t-2 border-white/80 p-2.5 flex flex-col justify-between">
-                        <!-- Label -->
-                        <div class="h-[58%] w-full bg-[#f4f1e1] rounded-md border border-gray-400 flex flex-col justify-between p-1.5 shadow-sm relative overflow-hidden">
-                            <div class="h-[45%] w-full bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 opacity-90 rounded-[3px]"></div>
-                            <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[10px] sm:text-xs font-black text-gray-800 tracking-[0.3em] bg-white/80 px-4 py-1 rounded shadow-sm backdrop-blur-md">WINORO</span>
+                    <div class="absolute inset-0 bg-gradient-to-b from-gray-200 to-gray-400 rounded-2xl shadow-[inset_0_2px_12px_rgba(255,255,255,0.9),_0_20px_40px_rgba(0,0,0,0.6)] border-t border-white/80 p-2.5 flex flex-col justify-between overflow-hidden">
+                        <div class="h-[55%] w-full bg-[#f4f1e1] rounded-xl border border-gray-400 flex flex-col justify-between p-1.5 shadow-sm relative overflow-hidden">
+                            <div class="h-[40%] w-full bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 opacity-90 rounded-[3px]"></div>
+                            <span class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[10px] font-black text-gray-800 tracking-[0.3em] bg-white/80 px-3 py-0.5 rounded shadow-sm">WINORO TAPE</span>
                         </div>
-                        <!-- Pita Tengah -->
                         <div class="relative w-[75%] h-[32%] bg-gray-900 mx-auto rounded-lg flex items-center justify-between px-4 border-2 border-gray-700 shadow-[inset_0_8px_20px_rgba(0,0,0,1)]">
                             <div class="h-0.5 bg-gray-700 w-full absolute top-1/2 left-0 transform -translate-y-1/2 z-0"></div>
-                            <div class="w-10 h-10 rounded-full bg-gray-200 border-[3.5px] border-gray-800 flex items-center justify-center z-10 ${isPlaying?'spin':''}">
+                            <div class="w-9 h-9 rounded-full bg-gray-200 border-[3.5px] border-gray-800 flex items-center justify-center z-10 ${isPlaying?'spin':''}">
                                 <div class="w-1.5 h-full bg-gray-800"></div><div class="h-1.5 w-full bg-gray-800 absolute"></div>
                             </div>
-                            <div class="w-10 h-10 rounded-full bg-gray-200 border-[3.5px] border-gray-800 flex items-center justify-center z-10 ${isPlaying?'spin':''}">
+                            <div class="w-9 h-9 rounded-full bg-gray-200 border-[3.5px] border-gray-800 flex items-center justify-center z-10 ${isPlaying?'spin':''}">
                                 <div class="w-1.5 h-full bg-gray-800"></div><div class="h-1.5 w-full bg-gray-800 absolute"></div>
                             </div>
                         </div>
-                        <div class="absolute top-2.5 left-2.5 w-2 h-2 rounded-full bg-gray-600 shadow-inner"></div>
-                        <div class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-gray-600 shadow-inner"></div>
+                        <div class="absolute top-2 left-2 w-2 h-2 rounded-full bg-gray-600 shadow-inner"></div>
+                        <div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-gray-600 shadow-inner"></div>
                     </div>
                 `;
             }
             else if (mode === 'photo') {
                 customPhotoGroup.classList.remove('hidden');
-                
-                // FIXED BUG: Memastikan gambar tidak tumpah dari lingkaran
                 diskCover.className = 'w-full h-full rounded-full flex justify-center items-center relative transition-all duration-500 shadow-[0_20px_50px_rgba(0,0,0,0.7)] overflow-hidden';
-                diskCover.style.transform = 'translateZ(0)'; // Webkit Safari Fix
-                diskCover.style.backfaceVisibility = 'hidden';
-                
-                diskCover.style.border = '1.5px solid rgba(255,255,255,0.1)';
+                diskCover.style.border = '2px solid rgba(255,255,255,0.15)';
                 diskCover.style.backgroundSize = 'cover';
                 diskCover.style.backgroundPosition = 'center';
                 
@@ -529,19 +669,15 @@
                     diskCover.style.backgroundImage = `url(${savedImg})`;
                 } else {
                     diskCover.style.backgroundColor = '#111';
-                    diskCover.innerHTML = `<div class="flex flex-col items-center opacity-40 text-white"><i class="fas fa-camera text-4xl mb-2"></i><span class="text-[10px] font-bold">FOTO</span></div>`;
+                    diskCover.innerHTML = `<div class="flex flex-col items-center opacity-40 text-white"><i class="fas fa-camera text-3xl mb-1"></i><span class="text-[9px] font-bold">FOTO</span></div>`;
                 }
-                
-                // Ring kilap bagian atas
-                diskCover.innerHTML += `<div class="absolute inset-0 rounded-full pointer-events-none shadow-[inset_0_0_40px_rgba(0,0,0,0.9),_inset_0_0_15px_rgba(255,255,255,0.2)] border border-white/5"></div>`;
-                
+                diskCover.innerHTML += `<div class="absolute inset-0 rounded-full pointer-events-none shadow-[inset_0_0_35px_rgba(0,0,0,0.85)] border border-white/10"></div>`;
                 if(isPlaying) diskCover.classList.add('spin');
             }
             else if (mode === 'wave') {
                 waveCanvas.classList.remove('hidden');
                 diskCover.className = 'w-full h-full rounded-full flex justify-center items-center relative transition-all duration-500 overflow-hidden';
-                diskCover.style.transform = 'translateZ(0)';
-                diskCover.innerHTML = `<i class="fas fa-music text-6xl opacity-5 text-white z-0 drop-shadow-2xl"></i>`; 
+                diskCover.innerHTML = `<i class="fas fa-music text-5xl opacity-5 text-white z-0"></i>`; 
                 if(isPlaying) drawWave();
             }
             localStorage.setItem('winoro_visual_mode', mode);
@@ -549,7 +685,7 @@
 
         visualModeSelect.addEventListener('change', (e) => updateVisualMode(e.target.value));
 
-        // --- Custom Image Uploads ---
+        // --- Custom File Uploads (Disc & Background) ---
         document.getElementById('disk-photo-input').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -557,6 +693,7 @@
                 reader.onload = function(e) {
                     localStorage.setItem('winoro_disk_img', e.target.result);
                     updateVisualMode('photo');
+                    showToast("Foto pemutar berhasil diperbarui!");
                 }
                 reader.readAsDataURL(file);
             }
@@ -570,6 +707,7 @@
                     localStorage.setItem('winoro_bg_img', e.target.result);
                     appBg.style.backgroundImage = `url(${e.target.result})`;
                     appBg.style.animation = 'none';
+                    showToast("Background berhasil diperbarui!");
                 }
                 reader.readAsDataURL(file);
             }
@@ -579,9 +717,10 @@
             localStorage.removeItem('winoro_bg_img');
             appBg.style.backgroundImage = '';
             appBg.style.animation = 'gradientBG 15s ease infinite';
+            showToast("Background direset ke mode animasi.");
         });
 
-        // --- Booster Control ---
+        // --- Sound Booster Control ---
         const boosterSlider = document.getElementById('booster-slider');
         const boosterVal = document.getElementById('booster-val');
         boosterSlider.addEventListener('input', (e) => {
@@ -591,7 +730,7 @@
             localStorage.setItem('winoro_booster', val);
         });
 
-        // --- Load Saved Settings ---
+        // Load Settings on Start
         function loadSettings() {
             const c = localStorage.getItem('winoro_color');
             if(c) document.documentElement.style.setProperty('--accent', c);
@@ -612,7 +751,7 @@
         }
         loadSettings();
 
-        // --- IndexedDB ---
+        // --- IndexedDB for Offline Music ---
         const dbName = "WinoroPremiumDB";
         let db;
         const requestDB = indexedDB.open(dbName, 1);
@@ -629,7 +768,7 @@
         };
 
         function saveFolderToDB(files) {
-            showToast("Memproses lagu... Mohon tunggu.", "spinner fa-spin");
+            showToast("Memproses folder lagu...", "spinner fa-spin");
             const transaction = db.transaction(["songs"], "readwrite");
             const store = transaction.objectStore("songs");
             store.clear(); 
@@ -656,7 +795,7 @@
                     showToast(`${count} Lagu diimpor! Memutar musik...`, "check-circle");
                     loadSongsFromDB(true); 
                 } else {
-                    showToast("Tidak ada musik di folder ini.", "exclamation-triangle");
+                    showToast("Tidak ada musik ditemukan di folder ini.", "exclamation-triangle");
                 }
             };
         }
@@ -678,13 +817,12 @@
                     playlistCount.innerText = `${songs.length} Track`;
                     renderPlaylist();
                     loadSong(0); 
-
                     if (autoPlayAfterImport) {
                         setTimeout(() => playSong(), 300);
                     }
                 } else {
                     playlistCount.innerText = `0 Track`;
-                    playlistEl.innerHTML = `<li class="text-xs text-center mt-12 font-medium opacity-50 uppercase tracking-widest">Folder Kosong</li>`;
+                    playlistEl.innerHTML = `<li class="text-sm text-center mt-12 font-medium opacity-50">Silakan pilih folder musik melalui menu.</li>`;
                     songTitleEl.innerText = "Belum ada lagu";
                     songArtistEl.innerText = "Pilih folder musik Anda";
                 }
@@ -776,7 +914,6 @@
                 diskCover.querySelectorAll('.rounded-full.bg-gray-200').forEach(el => el.classList.add('spin'));
             }
             if(mode === 'wave') drawWave();
-            
             renderPlaylist(); 
         }
 
@@ -788,7 +925,6 @@
             diskCover.classList.remove('spin'); 
             diskCover.querySelectorAll('.rounded-full.bg-gray-200').forEach(el => el.classList.remove('spin'));
             cancelAnimationFrame(animationId);
-            
             renderPlaylist();
         }
 
@@ -828,6 +964,102 @@
                 audioPlayer.currentTime = (e.target.value / 100) * audioPlayer.duration;
             }
         });
+
+        // --- Online Video Player Logic (YouTube & Direct URLs) ---
+        function parseYouTubeUrl(url) {
+            let videoId = '';
+            if (url.includes('youtu.be/')) {
+                videoId = url.split('youtu.be/')[1]?.split('?')[0];
+            } else if (url.includes('youtube.com/watch')) {
+                const urlParams = new URLSearchParams(new URL(url).search);
+                videoId = urlParams.get('v');
+            } else if (url.includes('youtube.com/embed/')) {
+                videoId = url.split('embed/')[1]?.split('?')[0];
+            }
+            return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : null;
+        }
+
+        function playOnlineVideo(url) {
+            if (!url.trim()) return showToast("Masukkan link video terlebih dahulu!", "exclamation-triangle");
+
+            videoPlaceholder.classList.add('hidden');
+            videoPlayerWrapper.classList.remove('hidden');
+            videoPlayerWrapper.innerHTML = '';
+
+            const ytEmbed = parseYouTubeUrl(url);
+            if (ytEmbed) {
+                const iframe = document.createElement('iframe');
+                iframe.src = ytEmbed;
+                iframe.className = "w-full h-full border-0";
+                iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture");
+                iframe.setAttribute("allowfullscreen", "");
+                videoPlayerWrapper.appendChild(iframe);
+            } else {
+                // Direct video link (.mp4, .webm, etc.)
+                const videoEl = document.createElement('video');
+                videoEl.src = url;
+                videoEl.controls = true;
+                videoEl.autoplay = true;
+                videoEl.className = "w-full h-full object-contain bg-black";
+                videoPlayerWrapper.appendChild(videoEl);
+            }
+
+            // Save to history
+            if (!videoHistory.includes(url)) {
+                videoHistory.unshift(url);
+                if (videoHistory.length > 15) videoHistory.pop();
+                localStorage.setItem('winoro_video_history', JSON.stringify(videoHistory));
+            }
+            renderVideoHistory();
+            showToast("Memuat video online...");
+        }
+
+        loadVideoBtn.addEventListener('click', () => {
+            playOnlineVideo(videoUrlInput.value);
+        });
+
+        videoUrlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                playOnlineVideo(videoUrlInput.value);
+            }
+        });
+
+        function renderVideoHistory() {
+            videoHistoryList.innerHTML = '';
+            videoCount.innerText = `${videoHistory.length} Video`;
+            if (videoHistory.length === 0) {
+                videoHistoryList.innerHTML = `<li class="text-xs text-center py-2 opacity-40 font-medium">Belum ada riwayat video.</li>`;
+                return;
+            }
+
+            videoHistory.forEach((url, idx) => {
+                const li = document.createElement('li');
+                li.className = "p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-between cursor-pointer group";
+                li.innerHTML = `
+                    <div class="flex items-center gap-2.5 truncate flex-1 mr-2">
+                        <i class="fas fa-play-circle dynamic-accent text-sm"></i>
+                        <span class="truncate text-xs font-medium text-white/80 group-hover:text-white">${url}</span>
+                    </div>
+                    <button class="text-red-400 hover:text-red-300 text-xs px-2 py-1 focus:outline-none" title="Hapus">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                `;
+
+                li.addEventListener('click', (e) => {
+                    if (e.target.closest('button')) {
+                        videoHistory.splice(idx, 1);
+                        localStorage.setItem('winoro_video_history', JSON.stringify(videoHistory));
+                        renderVideoHistory();
+                        showToast("Riwayat dihapus.");
+                        return;
+                    }
+                    videoUrlInput.value = url;
+                    playOnlineVideo(url);
+                });
+                videoHistoryList.appendChild(li);
+            });
+        }
+        renderVideoHistory();
     </script>
 </body>
 </html>
