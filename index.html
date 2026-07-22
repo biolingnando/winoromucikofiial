@@ -5,15 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WINORO MUSIC & VIDEO PLAYER</title>
     
+    <!-- Favicon untuk Tab Browser -->
+    <link rel="icon" href="https://i.ibb.co.com/1GybrRmh/Gemini-Generated-Image-hpi0l3hpi0l3hpi0.png" type="image/png">
+
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="WINORO MUSIC & VIDEO PLAYER">
     <meta property="og:description" content="Pemutar Musik Offline & Video Online dengan Fitur Sound Booster & Kustomisasi Estetik.">
-    <!-- Menggunakan gambar custom dari Anda untuk pratinjau Link (WhatsApp/FB/IG) -->
-    <meta property="og:image" content="https://winoromusicofficial.vercel.app/Gemini_Generated_Image_hpi0l3hpi0l3hpi0.png">
+    <meta property="og:image" content="https://i.ibb.co.com/1GybrRmh/Gemini-Generated-Image-hpi0l3hpi0l3hpi0.png">
     <meta property="og:type" content="website">
 
-    <!-- PWA Web App Manifest -->
-    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22WINORO%22%2C%22short_name%22%3A%22Winoro%22%2C%22start_url%22%3A%22%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230f0c29%22%2C%22theme_color%22%3A%22%23a855f7%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fplacehold.co%2F192x192%2Fa855f7%2Fffffff%3Ftext%3DW%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
+    <!-- PWA Web App Manifest (Ikon Gambar Asli) -->
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22WINORO%20MUSIC%22%2C%22short_name%22%3A%22WINORO%22%2C%22start_url%22%3A%22%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230a0a0f%22%2C%22theme_color%22%3A%22%23a855f7%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fi.ibb.co.com%2F1GybrRmh%2FGemini-Generated-Image-hpi0l3hpi0l3hpi0.png%22%2C%22sizes%22%3A%22192x192%20512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+    
+    <!-- Ikon Khusus untuk Pengguna iPhone/iPad (iOS) -->
+    <link rel="apple-touch-icon" href="https://i.ibb.co.com/1GybrRmh/Gemini-Generated-Image-hpi0l3hpi0l3hpi0.png">
+
     <meta name="theme-color" content="#0a0a0f">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -174,7 +180,7 @@
                         <i class="fas fa-sliders-h text-theme-1 w-4 text-base"></i> Pengaturan Tema
                     </button>
                     <button id="menu-install-btn" class="w-full text-left flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-sm font-bold text-emerald-400 focus:outline-none">
-                        <i class="fas fa-download w-4 text-base"></i> Download APPS
+                        <i class="fas fa-download w-4 text-base"></i> Install PWA App
                     </button>
                 </div>
             </div>
@@ -413,51 +419,23 @@
         let isPlaying = false; 
         let currentTab = 'music';
 
-        // --- SISTEM PWA (Download APPS) ---
+        // PWA Install
         let deferredPrompt = null;
-        const installBtn = document.getElementById('menu-install-btn');
-
-        // Fungsi mengecek apakah sedang dibuka di Aplikasi PWA atau di Browser Web biasa
-        function checkPWAStatus() {
-            if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-                // Jika sudah jadi aplikasi, SEMBUNYIKAN tombol Download APPS
-                installBtn.style.display = 'none';
-            } else {
-                // Jika masih di browser Google/Chrome, TAMPILKAN tombol
-                installBtn.style.display = 'flex';
-            }
-        }
-        
-        // Jalankan pengecekan saat web dimuat
-        checkPWAStatus();
-        
-        // Deteksi perubahan (jika user menghapus/menginstal ulang)
-        window.matchMedia('(display-mode: standalone)').addEventListener('change', checkPWAStatus);
-
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            installBtn.style.display = 'flex'; // Pastikan tombol muncul jika siap diinstal
         });
 
-        installBtn.addEventListener('click', async () => {
+        document.getElementById('menu-install-btn').addEventListener('click', async () => {
             dropdownMenu.classList.add('hidden');
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    showToast("Berhasil diinstal! Silakan cek layar utama HP Anda.");
-                    installBtn.style.display = 'none'; // Sembunyikan seketika setelah sukses instal
-                }
+                if (outcome === 'accepted') showToast("Berhasil diinstal ke layar utama!");
                 deferredPrompt = null;
             } else {
-                showToast("Cara Install: Ketuk menu browser (⋮) lalu pilih 'Tambahkan ke Layar Utama / Install App'.", "info-circle");
+                showToast("Cara Install PWA: Ketuk menu browser (⋮) lalu pilih 'Tambahkan ke Layar Utama'.", "info-circle");
             }
-        });
-
-        window.addEventListener('appinstalled', () => {
-            installBtn.style.display = 'none'; // Pastikan hilang jika diinstal lewat menu browser
-            deferredPrompt = null;
         });
 
         // --- SISTEM TEMA 3 WARNA (PALET) ---
