@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WINORO MUSIC & VIDEO PLAYER</title>
+    <title>WINORO MUSIC PLAYER</title>
     
     <!-- Favicon untuk Tab Browser -->
     <link rel="icon" href="https://i.ibb.co.com/1GybrRmh/Gemini-Generated-Image-hpi0l3hpi0l3hpi0.png" type="image/png">
 
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="WINORO MUSIC & VIDEO PLAYER">
-    <meta property="og:description" content="Pemutar Musik Offline & Video Online dengan Fitur Sound Booster & Kustomisasi Estetik.">
+    <!-- Open Graph Meta Tags (Untuk WhatsApp, FB, IG) -->
+    <meta property="og:title" content="WINORO MUSIC PLAYER">
+    <meta property="og:description" content="Pemutar Musik Offline Premium dengan Fitur Sound Booster & Visualizer.">
     <meta property="og:image" content="https://i.ibb.co.com/1GybrRmh/Gemini-Generated-Image-hpi0l3hpi0l3hpi0.png">
     <meta property="og:type" content="website">
 
-    <!-- PWA Web App Manifest (Ikon Gambar Asli) -->
+    <!-- PWA Web App Manifest -->
     <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22WINORO%20MUSIC%22%2C%22short_name%22%3A%22WINORO%22%2C%22start_url%22%3A%22%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230a0a0f%22%2C%22theme_color%22%3A%22%23a855f7%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fi.ibb.co.com%2F1GybrRmh%2FGemini-Generated-Image-hpi0l3hpi0l3hpi0.png%22%2C%22sizes%22%3A%22192x192%20512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
     
     <!-- Ikon Khusus untuk Pengguna iPhone/iPad (iOS) -->
@@ -24,6 +24,13 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+    <!-- HIDE PWA INSTALL BUTTON WHEN IN STANDALONE MODE -->
+    <style>
+        @media all and (display-mode: standalone) {
+            #menu-install-btn { display: none !important; }
+        }
+    </style>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -31,10 +38,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
         
         :root {
-            /* Warna Tema Utama (Default: Purple/Pink/Blue) */
-            --accent-1: #a855f7; /* Teks & Ikon */
-            --accent-2: #ec4899; /* Visual & Cover */
-            --accent-3: #3b82f6; /* Tombol Interaktif */
+            --accent-1: #a855f7; 
+            --accent-2: #ec4899; 
+            --accent-3: #3b82f6; 
             
             --text-main: #ffffff;
             --text-muted: rgba(255, 255, 255, 0.6);
@@ -47,7 +53,6 @@
             overflow: hidden; 
         }
 
-        /* Styling Dinamis Berdasarkan 3 Palet Warna */
         .text-theme-1 { color: var(--accent-1) !important; }
         .bg-theme-2 { background-color: var(--accent-2) !important; }
         .bg-theme-3 { background-color: var(--accent-3) !important; }
@@ -55,7 +60,6 @@
         .shadow-theme-3 { box-shadow: 0 10px 25px rgba(0,0,0,0.4), 0 0 15px var(--accent-3) !important; }
         .border-theme-3 { border-color: var(--accent-3) !important; }
 
-        /* Latar Belakang */
         #app-bg {
             background: linear-gradient(-45deg, #09090e, #13111c, #0a0f18, #000000);
             background-size: 400% 400%;
@@ -79,7 +83,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Glassmorphism Premium */
         .glass-panel {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
             backdrop-filter: blur(30px);
@@ -89,12 +92,10 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--accent-1); border-radius: 10px; opacity: 0.3; }
 
-        /* Slider Range (Menggunakan Warna 3 untuk interaksi) */
         input[type=range] { -webkit-appearance: none; background: transparent; }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
@@ -108,7 +109,6 @@
             background: rgba(255, 255, 255, 0.15); border-radius: 2px;
         }
 
-        /* Textures */
         .vinyl-texture {
             background: linear-gradient(30deg, transparent 40%, rgba(255,255,255,0.06) 50%, transparent 60%),
                         repeating-radial-gradient(#111 0%, #050505 1%, #111 2%);
@@ -119,18 +119,12 @@
             pointer-events: none;
         }
 
-        /* Animations */
         .spin { animation: spin 4s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .fade-in { animation: fadeIn 0.3s ease forwards; }
         .fade-out { animation: fadeOut 0.3s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(8px); } }
-
-        /* Custom Iframe/Video */
-        #video-player-wrapper iframe, #video-player-wrapper video {
-            width: 100%; height: 100%; border-radius: 1rem; border: none; background: #000;
-        }
     </style>
 </head>
 <body class="relative min-h-[100dvh] w-full flex items-center justify-center overflow-hidden">
@@ -140,7 +134,7 @@
     <div class="noise-overlay"></div>
     <div class="absolute inset-0 z-0 bg-gradient-to-b from-transparent via-black/40 to-[#050508] pointer-events-none"></div>
 
-    <!-- MAIN CONTAINER (Tengah Layar Sempurna) -->
+    <!-- MAIN CONTAINER (Tengah Layar Sempurna Tanpa Bar Bawah) -->
     <div class="relative z-10 w-full max-w-md h-[100dvh] flex flex-col p-4 sm:p-5 gap-4 mx-auto">
         
         <!-- PANEL 1: HEADER & MENU -->
@@ -157,7 +151,7 @@
                 <!-- Dropdown Menu Kontekstual -->
                 <div id="dropdown-menu" class="hidden absolute right-0 mt-3 w-56 bg-gray-900/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl overflow-hidden z-50">
                     
-                    <!-- Menu Musik (Aktif saat di tab Musik) -->
+                    <!-- Menu Musik Offline -->
                     <div id="menu-group-music">
                         <input type="file" id="file-input" class="hidden" webkitdirectory directory multiple>
                         <label for="file-input" class="cursor-pointer flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-sm font-semibold border-b border-white/10">
@@ -168,19 +162,13 @@
                         </button>
                     </div>
 
-                    <!-- Menu Video (Aktif saat di tab Video) -->
-                    <div id="menu-group-video" class="hidden">
-                        <button id="menu-videolist-btn" class="w-full text-left flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-sm font-semibold border-b border-white/10 focus:outline-none">
-                            <i class="fas fa-history text-theme-1 w-4 text-base"></i> Riwayat Video
-                        </button>
-                    </div>
-
                     <!-- Menu Global -->
                     <button id="menu-settings-btn" class="w-full text-left flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-sm font-semibold border-b border-white/10 focus:outline-none">
                         <i class="fas fa-sliders-h text-theme-1 w-4 text-base"></i> Pengaturan Tema
                     </button>
+                    <!-- Tombol Download APPS -->
                     <button id="menu-install-btn" class="w-full text-left flex items-center gap-3 px-5 py-3.5 hover:bg-white/10 transition-colors text-sm font-bold text-emerald-400 focus:outline-none">
-                        <i class="fas fa-download w-4 text-base"></i> Install PWA App
+                        <i class="fas fa-download w-4 text-base"></i> Download APPS
                     </button>
                 </div>
             </div>
@@ -191,17 +179,13 @@
             
             <!-- PANEL 2: VISUAL PRESISI -->
             <div class="glass-panel rounded-[2rem] flex-1 min-h-0 flex items-center justify-center relative overflow-hidden p-4 sm:p-6 group">
-                <!-- Aura Cahaya Dinamis (Warna 2) -->
                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
                      <div class="w-[70%] h-[70%] rounded-full bg-theme-2 blur-[70px] opacity-10 group-hover:opacity-25 transition-opacity duration-700"></div>
                 </div>
 
-                <!-- Canvas Visualizer Ombak -->
                 <canvas id="wave-canvas" class="absolute inset-0 w-full h-full hidden z-10 opacity-90"></canvas>
                 
-                <!-- Kotak Rasio 1:1 Sempurna (Anti-Penyok) -->
                 <div id="visual-container" class="relative flex justify-center items-center z-20 transition-all duration-500" style="width: min(100%, 280px); height: min(100%, 280px); aspect-ratio: 1/1; transform: translateZ(0);">
-                    <!-- Default Vinyl -->
                     <div id="disk-cover" class="w-full h-full rounded-full flex justify-center items-center vinyl-texture relative shadow-[0_15px_35px_rgba(0,0,0,0.6)]" style="transform: translateZ(0); overflow: hidden;">
                         <div id="disk-center" class="w-[30%] h-[30%] rounded-full bg-theme-2 border-2 border-[#333] flex justify-center items-center bg-cover bg-center z-10 shadow-lg">
                             <div class="w-3.5 h-3.5 bg-[#111] rounded-full shadow-inner"></div>
@@ -241,59 +225,12 @@
             </div>
         </div>
 
-        <!-- VIEW 2: VIDEO ONLINE -->
-        <div id="video-view" class="hidden flex-1 min-h-0 flex flex-col gap-4 transition-all duration-300">
-            <div class="glass-panel rounded-[2rem] flex-1 min-h-0 flex flex-col overflow-hidden relative p-4">
-                
-                <div id="offline-banner" class="hidden bg-red-500/20 border border-red-500/30 text-red-300 text-xs font-bold px-3 py-2.5 rounded-xl mb-3 flex items-center">
-                    <i class="fas fa-wifi-slash mr-2"></i> Mode Offline: Membutuhkan internet.
-                </div>
-
-                <!-- Pemutar Universal -->
-                <div id="video-container" class="w-full flex-1 min-h-[200px] bg-black/90 rounded-[1.5rem] overflow-hidden relative flex items-center justify-center border border-white/10 shadow-inner">
-                    <div id="video-placeholder" class="text-center p-6 flex flex-col items-center">
-                        <i class="fas fa-globe text-theme-1 text-5xl mb-4 animate-pulse"></i>
-                        <h3 class="text-sm font-bold text-white mb-2">Universal Media Player</h3>
-                        <p class="text-xs text-white/50 max-w-[240px]">Putar link dari YouTube, SoundCloud, atau link video bebas (.mp4, dll).</p>
-                    </div>
-                    <div id="video-player-wrapper" class="absolute inset-0 hidden w-full h-full"></div>
-                </div>
-
-                <!-- Kontrol Ekstra (PiP) -->
-                <div class="flex justify-between items-center mt-3 px-1">
-                    <span class="text-[10px] font-bold text-white/50 uppercase tracking-widest"><i class="fas fa-shield-halved text-emerald-400 mr-1"></i> Web Stream</span>
-                    <button id="pip-btn" class="hidden bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 transition-colors flex items-center gap-1.5">
-                        <i class="fas fa-clone"></i> Mode PiP
-                    </button>
-                </div>
-
-                <!-- Input Link -->
-                <div class="mt-3 flex gap-2 shrink-0">
-                    <input type="text" id="video-url-input" placeholder="Tempel link YouTube / bebas..." class="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/30 transition-colors">
-                    <button id="load-video-btn" class="bg-theme-3 text-white px-5 py-3 rounded-xl text-sm font-bold shadow-lg transition-transform hover:scale-105 border border-white/10">
-                        Putar
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- NAVIGASI BAWAH (BOTTOM TABS) -->
-        <div class="glass-panel rounded-[1.5rem] p-2 flex justify-around items-center shrink-0 z-20">
-            <button id="tab-music" class="flex-1 flex flex-col items-center justify-center py-2.5 rounded-xl transition-all text-theme-1 bg-white/10 shadow-inner focus:outline-none">
-                <i class="fas fa-music text-lg mb-1"></i>
-                <span class="text-[10px] font-extrabold tracking-widest uppercase">Musik Offline</span>
-            </button>
-            <button id="tab-video" class="flex-1 flex flex-col items-center justify-center py-2.5 rounded-xl transition-all text-white/50 hover:text-white focus:outline-none">
-                <i class="fas fa-video text-lg mb-1"></i>
-                <span class="text-[10px] font-extrabold tracking-widest uppercase">Video Online</span>
-            </button>
-        </div>
     </div>
 
     <!-- OVERLAY LAYAR GELAP -->
     <div id="drawer-overlay" class="fixed inset-0 bg-black/80 z-30 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-sm"></div>
 
-    <!-- LACI DAFTAR MUSIK OFFLINE (Tersembunyi di bawah) -->
+    <!-- LACI DAFTAR MUSIK OFFLINE -->
     <div id="playlist-drawer" class="fixed inset-x-0 bottom-0 h-[70dvh] w-full max-w-md mx-auto bg-[#0a0a0f]/95 backdrop-blur-3xl rounded-t-[2.5rem] border-t border-white/10 transform translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] z-40 flex flex-col shadow-[0_-20px_60px_rgba(0,0,0,0.8)]">
         <div id="close-drawer-btn" class="flex flex-col items-center pt-4 pb-2 cursor-pointer group">
             <div class="w-16 h-1.5 bg-white/20 group-hover:bg-white/60 rounded-full transition-colors"></div>
@@ -319,7 +256,6 @@
                 <button id="close-settings" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors focus:outline-none"><i class="fas fa-times"></i></button>
             </div>
             
-            <!-- Sound Booster -->
             <div class="mb-5 bg-white/5 p-4 rounded-2xl border border-white/5">
                 <p class="text-xs text-gray-400 mb-3 uppercase tracking-widest font-bold"><i class="fas fa-bolt text-yellow-400 mr-2"></i> Audio Booster</p>
                 <div class="flex items-center gap-4">
@@ -329,10 +265,8 @@
                 </div>
             </div>
 
-            <!-- Tampilan Visual -->
             <div class="mb-5 bg-white/5 p-4 rounded-2xl border border-white/5">
                 <p class="text-xs text-gray-400 mb-3 uppercase tracking-widest font-bold"><i class="fas fa-eye text-theme-1 mr-2"></i> Tampilan Visual</p>
-                
                 <select id="visual-mode" class="w-full bg-black/60 border border-white/10 rounded-xl p-3 text-sm text-white font-semibold focus:outline-none focus:border-white/30 transition-colors mb-3">
                     <option value="vinyl">Piringan Hitam (Klasik)</option>
                     <option value="cassette">Kaset Pita (Retro 3D)</option>
@@ -348,12 +282,10 @@
                 </div>
             </div>
 
-            <!-- Tema Warna Multi-Peran (Baru) -->
             <div class="mb-5">
                 <p class="text-xs text-gray-400 mb-3 uppercase tracking-widest font-bold"><i class="fas fa-palette text-theme-1 mr-2"></i> 20 Palet Tema</p>
                 <div id="themes-grid" class="flex flex-wrap gap-3"></div>
                 
-                <!-- Panel Racik Warna Kustom -->
                 <div id="custom-palette-panel" class="hidden w-full mt-3 bg-black/40 p-4 rounded-xl border border-white/10 flex-col gap-3">
                     <div class="flex justify-between items-center">
                         <span class="text-xs font-bold text-gray-300">1. Warna Teks & Ikon</span>
@@ -370,7 +302,6 @@
                 </div>
             </div>
 
-            <!-- Upload Latar -->
             <div class="mb-6 bg-white/5 p-4 rounded-2xl border border-white/5">
                 <p class="text-xs text-gray-400 mb-3 uppercase tracking-widest font-bold"><i class="fas fa-image text-theme-1 mr-2"></i> Wallpaper / Latar</p>
                 <input type="file" id="bg-photo-input" accept="image/*" class="hidden">
@@ -384,11 +315,10 @@
                 </div>
             </div>
 
-            <!-- Bantuan / Laporan -->
             <div class="border-t border-white/10 pt-5 flex flex-col gap-3">
-                <a href="https://laporanmember.vercel.app/" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 text-xs uppercase tracking-widest text-sky-400 font-bold px-5 py-3.5 bg-sky-500/10 rounded-xl hover:bg-sky-500/20 transition-colors border border-sky-500/20 shadow-lg">
+                <button id="open-report-btn" class="w-full flex items-center justify-center gap-2 text-xs uppercase tracking-widest text-sky-400 font-bold px-5 py-3.5 bg-sky-500/10 rounded-xl hover:bg-sky-500/20 transition-colors border border-sky-500/20 shadow-lg focus:outline-none">
                     <i class="fas fa-headset text-sm"></i> Laporkan Keluhan Member
-                </a>
+                </button>
                 <button id="clear-db-btn" class="w-full flex items-center justify-center gap-2 text-xs uppercase tracking-widest text-red-400 font-bold px-5 py-3.5 bg-red-500/10 rounded-xl hover:bg-red-500/20 transition-colors border border-red-500/10 shadow-lg">
                     <i class="fas fa-database text-sm"></i> Hapus Semua Musik Offline
                 </button>
@@ -396,19 +326,38 @@
         </div>
     </div>
 
+    <!-- MODAL LAPORAN KELUHAN -->
+    <div id="report-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity">
+        <div class="bg-[#0a0a0f]/95 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] w-full max-w-md p-6 shadow-2xl relative transform transition-all">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-black text-white"><i class="fas fa-headset mr-2 text-sky-400"></i> Pusat Bantuan</h3>
+                <button id="close-report" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-colors focus:outline-none"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <form id="report-form" class="flex flex-col gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Nama Pelapor</label>
+                    <input type="text" id="report-name" required class="w-full bg-black/60 border border-white/10 rounded-xl p-3.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-sky-500/50 transition-colors" placeholder="Masukkan nama Anda...">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Email Pelapor</label>
+                    <input type="email" id="report-email" required class="w-full bg-black/60 border border-white/10 rounded-xl p-3.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-sky-500/50 transition-colors" placeholder="Email untuk balasan...">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Detail Keluhan / Saran</label>
+                    <textarea id="report-message" required rows="4" class="w-full bg-black/60 border border-white/10 rounded-xl p-3.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-sky-500/50 transition-colors custom-scrollbar" placeholder="Ceritakan kendala atau saran Anda untuk WINORO..."></textarea>
+                </div>
+                <button type="submit" id="submit-report-btn" class="mt-2 w-full flex items-center justify-center gap-2 text-xs uppercase tracking-widest text-black font-bold px-5 py-4 bg-sky-400 rounded-xl hover:bg-sky-300 transition-colors shadow-[0_0_20px_rgba(56,189,248,0.3)] focus:outline-none">
+                    <i class="fas fa-paper-plane text-sm"></i> Kirim Laporan
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Toast Notifikasi -->
-    <div id="toast" class="hidden fixed top-6 left-1/2 transform -translate-x-1/2 bg-[#0a0a0f]/95 text-white px-6 py-3.5 rounded-full shadow-2xl border border-white/10 text-sm font-bold z-[200] backdrop-blur-xl flex items-center gap-3"></div>
+    <div id="toast" class="hidden fixed top-6 left-1/2 transform -translate-x-1/2 bg-[#0a0a0f]/95 text-white px-6 py-3.5 rounded-full shadow-2xl border border-white/10 text-sm font-bold z-[200] backdrop-blur-xl flex items-center gap-3 w-max max-w-[90vw]"></div>
 
     <script>
-        // --- Referensi DOM Utama ---
-        const tabMusic = document.getElementById('tab-music');
-        const tabVideo = document.getElementById('tab-video');
-        const musicView = document.getElementById('music-view');
-        const videoView = document.getElementById('video-view');
-        const headerTitle = document.getElementById('header-title');
-        
-        const menuGroupMusic = document.getElementById('menu-group-music');
-        const menuGroupVideo = document.getElementById('menu-group-video');
         const menuBtn = document.getElementById('menu-btn');
         const dropdownMenu = document.getElementById('dropdown-menu');
 
@@ -417,9 +366,8 @@
         let songs = []; 
         let currentSongIndex = 0; 
         let isPlaying = false; 
-        let currentTab = 'music';
 
-        // PWA Install
+        // PWA Install Logic
         let deferredPrompt = null;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -431,35 +379,34 @@
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') showToast("Berhasil diinstal ke layar utama!");
+                if (outcome === 'accepted') showToast("Mendownload Aplikasi...");
                 deferredPrompt = null;
             } else {
-                showToast("Cara Install PWA: Ketuk menu browser (⋮) lalu pilih 'Tambahkan ke Layar Utama'.", "info-circle");
+                showToast("Cara Install: Ketuk menu browser (⋮) lalu pilih 'Tambahkan ke Layar Utama / Install App'.", "info-circle");
             }
         });
 
         // --- SISTEM TEMA 3 WARNA (PALET) ---
-        // Format: [Warna Teks, Warna Visual/Cover, Warna Tombol]
         const palettes = [
-            ['#a855f7', '#ec4899', '#3b82f6'], // 1. Winoro Default
-            ['#ff0000', '#ffff00', '#0000ff'], // 2. RGB Basic
-            ['#00ffff', '#00ff00', '#ff00ff'], // 3. Neon RGB
-            ['#f43f5e', '#f97316', '#eab308'], // 4. Sunset
-            ['#10b981', '#14b8a6', '#06b6d4'], // 5. Ocean
-            ['#8b5cf6', '#d946ef', '#f43f5e'], // 6. Cyberpunk
-            ['#eab308', '#84cc16', '#22c55e'], // 7. Forest
-            ['#ffffff', '#cbd5e1', '#94a3b8'], // 8. Silver Monokrom
-            ['#facc15', '#f97316', '#ef4444'], // 9. Fire
-            ['#38bdf8', '#818cf8', '#c084fc'], // 10. Pastel Sky
-            ['#14b8a6', '#0ea5e9', '#6366f1'], // 11. Deep Sea
-            ['#fbbf24', '#f87171', '#fb7185'], // 12. Peach
-            ['#a3e635', '#4ade80', '#2dd4bf'], // 13. Mint
-            ['#c026d3', '#db2777', '#e11d48'], // 14. Berry
-            ['#f472b6', '#c084fc', '#818cf8'], // 15. Cotton Candy
-            ['#fb923c', '#fbbf24', '#a3e635'], // 16. Citrus
-            ['#2dd4bf', '#38bdf8', '#818cf8'], // 17. Ice
-            ['#e879f9', '#c084fc', '#a78bfa'], // 18. Lavender
-            ['#ffffff', '#000000', '#ff0000']  // 19. Black White Red
+            ['#a855f7', '#ec4899', '#3b82f6'], 
+            ['#ff0000', '#ffff00', '#0000ff'], 
+            ['#00ffff', '#00ff00', '#ff00ff'], 
+            ['#f43f5e', '#f97316', '#eab308'], 
+            ['#10b981', '#14b8a6', '#06b6d4'], 
+            ['#8b5cf6', '#d946ef', '#f43f5e'], 
+            ['#eab308', '#84cc16', '#22c55e'], 
+            ['#ffffff', '#cbd5e1', '#94a3b8'], 
+            ['#facc15', '#f97316', '#ef4444'], 
+            ['#38bdf8', '#818cf8', '#c084fc'], 
+            ['#14b8a6', '#0ea5e9', '#6366f1'], 
+            ['#fbbf24', '#f87171', '#fb7185'], 
+            ['#a3e635', '#4ade80', '#2dd4bf'], 
+            ['#c026d3', '#db2777', '#e11d48'], 
+            ['#f472b6', '#c084fc', '#818cf8'], 
+            ['#fb923c', '#fbbf24', '#a3e635'], 
+            ['#2dd4bf', '#38bdf8', '#818cf8'], 
+            ['#e879f9', '#c084fc', '#a78bfa'], 
+            ['#ffffff', '#000000', '#ff0000']  
         ];
 
         const themesGrid = document.getElementById('themes-grid');
@@ -474,26 +421,22 @@
             document.documentElement.style.setProperty('--accent-3', c3);
             localStorage.setItem('winoro_palette', JSON.stringify({c1, c2, c3}));
             
-            // Perbarui warna color picker kustom agar selaras
             colorC1.value = c1; colorC2.value = c2; colorC3.value = c3;
             if(isPlaying && document.getElementById('visual-mode').value === 'wave') drawWave();
         }
 
-        // Render 19 Preset Buttons
         palettes.forEach((p, idx) => {
             const btn = document.createElement('button');
             btn.className = `w-9 h-9 rounded-full border-2 border-transparent hover:border-white transition-all hover:scale-110 shadow-lg`;
-            // Trik gradient agar tombol menampilkan ke-3 warna!
             btn.style.background = `linear-gradient(135deg, ${p[0]} 33%, ${p[1]} 33%, ${p[1]} 66%, ${p[2]} 66%)`;
             btn.title = `Palet ${idx + 1}`;
             btn.addEventListener('click', () => {
                 applyPalette(p[0], p[1], p[2]);
-                customPalettePanel.classList.add('hidden'); // Sembunyikan panel kustom
+                customPalettePanel.classList.add('hidden'); 
             });
             themesGrid.appendChild(btn);
         });
 
-        // Tombol Ke-20: Custom Palette
         const customColorBtn = document.createElement('button');
         customColorBtn.className = `w-9 h-9 rounded-full border-2 border-dashed border-white/60 hover:border-white transition-all hover:scale-110 shadow-lg flex items-center justify-center bg-transparent`;
         customColorBtn.innerHTML = '<i class="fas fa-palette text-sm text-white"></i>';
@@ -503,12 +446,10 @@
         });
         themesGrid.appendChild(customColorBtn);
 
-        // Listener untuk Input Color Custom
         [colorC1, colorC2, colorC3].forEach(input => {
             input.addEventListener('input', () => applyPalette(colorC1.value, colorC2.value, colorC3.value));
         });
 
-        // Load Saved Palette
         const savedPalette = localStorage.getItem('winoro_palette');
         if(savedPalette) {
             const p = JSON.parse(savedPalette);
@@ -517,31 +458,6 @@
             applyPalette(palettes[0][0], palettes[0][1], palettes[0][2]);
         }
 
-        // --- Navigasi Tab ---
-        function switchTab(tab) {
-            currentTab = tab;
-            dropdownMenu.classList.add('hidden');
-            if (tab === 'music') {
-                musicView.classList.remove('hidden');
-                videoView.classList.add('hidden');
-                headerTitle.innerHTML = 'WINORO <span class="text-theme-1 font-light">MUSIC</span>';
-                tabMusic.className = "flex-1 flex flex-col items-center justify-center py-2.5 rounded-xl transition-all text-theme-1 bg-white/10 shadow-inner focus:outline-none";
-                tabVideo.className = "flex-1 flex flex-col items-center justify-center py-2.5 rounded-xl transition-all text-white/50 hover:text-white focus:outline-none";
-                menuGroupMusic.classList.remove('hidden');
-                menuGroupVideo.classList.add('hidden');
-            } else {
-                musicView.classList.add('hidden');
-                videoView.classList.remove('hidden');
-                headerTitle.innerHTML = 'WINORO <span class="text-theme-1 font-light">VIDEO</span>';
-                tabVideo.className = "flex-1 flex flex-col items-center justify-center py-2.5 rounded-xl transition-all text-theme-1 bg-white/10 shadow-inner focus:outline-none";
-                tabMusic.className = "flex-1 flex flex-col items-center justify-center py-2.5 rounded-xl transition-all text-white/50 hover:text-white focus:outline-none";
-                menuGroupMusic.classList.add('hidden');
-                menuGroupVideo.classList.remove('hidden');
-            }
-        }
-        tabMusic.addEventListener('click', () => switchTab('music'));
-        tabVideo.addEventListener('click', () => switchTab('video'));
-
         // --- Menu & Modal Logic ---
         menuBtn.addEventListener('click', (e) => { e.stopPropagation(); dropdownMenu.classList.toggle('hidden'); });
         document.addEventListener('click', (e) => { if (!menuBtn.contains(e.target) && !dropdownMenu.contains(e.target)) dropdownMenu.classList.add('hidden'); });
@@ -549,6 +465,7 @@
         const playlistDrawer = document.getElementById('playlist-drawer');
         const drawerOverlay = document.getElementById('drawer-overlay');
         const settingsModal = document.getElementById('settings-modal');
+        const reportModal = document.getElementById('report-modal');
 
         function openDrawer() {
             dropdownMenu.classList.add('hidden');
@@ -562,6 +479,7 @@
             drawerOverlay.classList.remove('opacity-100', 'pointer-events-auto');
             drawerOverlay.classList.add('opacity-0', 'pointer-events-none');
             settingsModal.classList.add('hidden');
+            reportModal.classList.add('hidden');
         }
 
         document.getElementById('menu-playlist-btn').addEventListener('click', openDrawer);
@@ -576,6 +494,65 @@
         });
         document.getElementById('close-settings').addEventListener('click', closeModals);
 
+        const openReportBtn = document.getElementById('open-report-btn');
+        const closeReportBtn = document.getElementById('close-report');
+        const reportForm = document.getElementById('report-form');
+
+        openReportBtn.addEventListener('click', () => {
+            settingsModal.classList.add('hidden'); // Sembunyikan pengaturan sejenak
+            reportModal.classList.remove('hidden'); // Tampilkan kotak laporan
+        });
+
+        closeReportBtn.addEventListener('click', () => {
+            reportModal.classList.add('hidden');
+            settingsModal.classList.remove('hidden'); 
+        });
+
+        reportForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Cegah reload halaman
+            
+            // Ubah tombol jadi status memuat (loading)
+            const submitBtn = document.getElementById('submit-report-btn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin text-sm"></i> Mengirim...';
+            submitBtn.disabled = true;
+
+            const name = document.getElementById('report-name').value;
+            const email = document.getElementById('report-email').value;
+            const message = document.getElementById('report-message').value;
+
+            // Menggunakan API FormSubmit gratis untuk mengirim ke email Anda tanpa backend
+            fetch("https://formsubmit.co/ajax/winorohadimukti@gmail.com", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    Nama_Pelapor: name,
+                    Email_Pelapor: email,
+                    Pesan_Laporan: message,
+                    _subject: "Laporan Baru WINORO MUSIC PLAYER" // Subjek Email
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                reportModal.classList.add('hidden');
+                settingsModal.classList.remove('hidden');
+                showToast("Laporan berhasil dikirim! Tim kami akan meninjaunya.", "paper-plane");
+                reportForm.reset(); 
+            })
+            .catch(error => {
+                showToast("Gagal mengirim laporan. Periksa koneksi Anda.", "exclamation-triangle");
+                console.error(error);
+            })
+            .finally(() => {
+                // Kembalikan tombol seperti semula
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        });
+
         function showToast(message, icon = 'check-circle') {
             const toast = document.getElementById('toast');
             toast.innerHTML = `<i class="fas fa-${icon} text-lg text-theme-1"></i> <span>${message}</span>`;
@@ -588,7 +565,7 @@
             }, 3000);
         }
 
-        // --- WEB AUDIO API & SOUND BOOSTER ---
+        // --- STREAMING_CHUNK:Web Audio API & Visuals... ---
         let audioCtx, audioSource, gainNode, analyser;
         let animationId;
 
@@ -617,7 +594,6 @@
             localStorage.setItem('winoro_booster', val);
         });
 
-        // --- VISUALIZER OMBAK ---
         const waveCanvas = document.getElementById('wave-canvas');
         function drawWave() {
             if (!analyser || document.getElementById('visual-mode').value !== 'wave') return;
@@ -634,7 +610,6 @@
             const centerY = waveCanvas.height / 2;
             const radius = waveCanvas.width * 0.28; 
             
-            // Ambil Warna 2 dari CSS Variable
             const accent2 = getComputedStyle(document.documentElement).getPropertyValue('--accent-2').trim();
 
             for (let i = 0; i < bufferLength; i += 4) {
@@ -660,26 +635,33 @@
             if (isPlaying) animationId = requestAnimationFrame(drawWave);
         }
 
-        // --- MANAJEMEN TAMPILAN VISUAL (Kaset/Piringan/Foto/Ombak) ---
         const visualModeSelect = document.getElementById('visual-mode');
         const customPhotoGroup = document.getElementById('custom-photo-input-group');
         const diskCover = document.getElementById('disk-cover');
         
         function updateVisualMode(mode) {
             waveCanvas.classList.add('hidden');
+            
             diskCover.className = 'flex justify-center items-center relative transition-all duration-500';
-            diskCover.style = 'transform: translateZ(0); overflow: hidden;'; 
+            diskCover.style.borderRadius = '';
+            diskCover.style.background = '';
+            diskCover.style.boxShadow = '';
+            diskCover.style.border = '';
+            diskCover.style.backgroundImage = '';
+            diskCover.style.backgroundSize = '';
+            diskCover.style.backgroundPosition = '';
             diskCover.innerHTML = '';
+            
             customPhotoGroup.classList.add('hidden');
 
             if (mode === 'vinyl') {
-                diskCover.className = 'w-full h-full rounded-full flex justify-center items-center relative vinyl-texture shadow-[0_15px_35px_rgba(0,0,0,0.6)]';
-                diskCover.innerHTML = `<div id="disk-center" class="w-[30%] h-[30%] rounded-full bg-theme-2 border-2 border-[#333] flex justify-center items-center z-10 shadow-lg"><div class="w-3.5 h-3.5 bg-[#111] rounded-full shadow-inner"></div></div>`;
+                diskCover.className = 'w-full h-full rounded-full flex justify-center items-center relative shadow-[0_15px_35px_rgba(0,0,0,0.6)] transition-all duration-500 vinyl-texture';
+                diskCover.innerHTML = `<div id="disk-center" class="w-[30%] h-[30%] rounded-full bg-theme-2 border-2 border-[#333] flex justify-center items-center bg-cover bg-center z-10 shadow-lg"><div class="w-3.5 h-3.5 bg-[#111] rounded-full shadow-inner"></div></div>`;
                 if(isPlaying) diskCover.classList.add('spin');
             } 
             else if (mode === 'cassette') {
-                diskCover.className = 'w-full aspect-[1.6/1] max-h-full flex justify-center items-center relative transition-all duration-500'; 
-                diskCover.style.overflow = 'visible';
+                diskCover.className = 'w-full aspect-[1.6/1] flex justify-center items-center relative transition-all duration-500'; 
+                
                 diskCover.innerHTML = `
                     <div class="absolute inset-0 bg-gradient-to-b from-gray-200 to-gray-400 rounded-xl shadow-[inset_0_2px_10px_rgba(255,255,255,0.8),_0_15px_30px_rgba(0,0,0,0.5)] border-t border-white p-2.5 flex flex-col justify-between overflow-hidden">
                         <div class="h-[55%] w-full bg-[#f4f1e1] rounded-lg border border-gray-400 p-1 shadow-sm relative overflow-hidden">
@@ -710,9 +692,11 @@
                     diskCover.style.backgroundImage = `url(${savedImg})`;
                 } else {
                     diskCover.style.backgroundColor = '#1a1c29';
-                    diskCover.innerHTML = `<div class="flex flex-col items-center opacity-30 text-white"><i class="fas fa-camera text-4xl mb-2"></i><span class="text-[10px] font-bold">FOTO</span></div>`;
+                    diskCover.innerHTML = `<div class="flex flex-col items-center opacity-30 text-white"><i class="fas fa-camera text-4xl mb-2"></i><span class="text-[10px] font-bold">FOTO KUSTOM</span></div>`;
                 }
+                
                 diskCover.innerHTML += `<div class="absolute inset-0 rounded-full pointer-events-none shadow-[inset_0_0_25px_rgba(0,0,0,0.8),_inset_0_0_10px_rgba(255,255,255,0.2)]"></div>`;
+                
                 if(isPlaying) diskCover.classList.add('spin');
             }
             else if (mode === 'wave') {
@@ -738,7 +722,6 @@
             }
         });
 
-        // --- BACKGROUND UPLOAD ---
         const appBg = document.getElementById('app-bg');
         document.getElementById('bg-photo-input').addEventListener('change', function(e) {
             if (e.target.files[0]) {
@@ -759,7 +742,6 @@
             showToast("Latar belakang direset.");
         });
 
-        // Load Settings Init
         const vMode = localStorage.getItem('winoro_visual_mode') || 'vinyl';
         visualModeSelect.value = vMode;
         updateVisualMode(vMode);
@@ -773,7 +755,7 @@
         boosterSlider.value = savedBoost;
         boosterVal.innerText = Math.round(savedBoost * 100) + '%';
 
-        // --- SISTEM OFFLINE (IndexedDB) ---
+        // --- STREAMING_CHUNK:Offline DB & Playback... ---
         const dbName = "WinoroPremiumDB";
         let db;
         const requestDB = indexedDB.open(dbName, 1);
@@ -791,7 +773,7 @@
         });
 
         function saveFolderToDB(files) {
-            showToast("Memproses file audio... Mohon tunggu.", "spinner fa-spin");
+            showToast("Memproses file audio... Mohon tunggu.");
             const transaction = db.transaction(["songs"], "readwrite");
             const store = transaction.objectStore("songs");
             store.clear(); 
@@ -816,9 +798,9 @@
             transaction.oncomplete = () => {
                 if(count > 0) {
                     showToast(`${count} Lagu berhasil diimpor!`);
-                    loadSongsFromDB(true); // true = auto play
+                    loadSongsFromDB(true); 
                 } else {
-                    showToast("Tidak ditemukan file audio (mp3/wav).");
+                    showToast("Tidak ditemukan file audio di folder ini.");
                 }
             };
         }
@@ -828,7 +810,7 @@
         const playlistCount = document.getElementById('playlist-count');
         const playlistEl = document.getElementById('playlist');
 
-        function loadSongsFromDB(autoPlayNew = false) {
+        function loadSongsFromDB(autoPlay = false) {
             if(!db) return;
             const transaction = db.transaction(["songs"], "readonly");
             const store = transaction.objectStore("songs");
@@ -837,17 +819,19 @@
             request.onsuccess = () => {
                 songs = [];
                 request.result.forEach(record => {
-                    songs.push({ title: record.title, artist: record.artist, url: URL.createObjectURL(record.fileBlob) });
+                    const fileUrl = URL.createObjectURL(record.fileBlob);
+                    songs.push({ title: record.title, artist: record.artist, url: fileUrl });
                 });
 
                 if (songs.length > 0) {
                     playlistCount.innerText = `${songs.length} Track`;
                     renderPlaylist();
                     loadSong(0); 
-                    if(autoPlayNew) playSong();
+                    
+                    if(autoPlay) playSong();
                 } else {
                     playlistCount.innerText = `0 Track`;
-                    playlistEl.innerHTML = `<li class="text-sm text-center mt-12 font-medium opacity-40">Tidak ada lagu. Silakan pilih folder.</li>`;
+                    playlistEl.innerHTML = `<li class="text-sm text-center mt-12 font-light opacity-50">Tidak ada lagu tersimpan.</li>`;
                     songTitleEl.innerText = "Belum ada lagu";
                     songArtistEl.innerText = "Pilih folder musik Anda";
                 }
@@ -863,7 +847,6 @@
             };
         });
 
-        // --- PLAYBACK LOGIC ---
         function renderPlaylist() {
             playlistEl.innerHTML = ''; 
             songs.forEach((song, index) => {
@@ -889,7 +872,7 @@
                         <span class="truncate text-[10px] mt-0.5 tracking-widest uppercase ${isActive ? 'text-theme-1' : 'opacity-50'}">${song.artist}</span>
                     </div>
                 `;
-                li.addEventListener('click', () => { loadSong(index); playSong(); });
+                li.addEventListener('click', () => { loadSong(index); playSong(); closeModals(); });
                 playlistEl.appendChild(li);
             });
         }
@@ -951,60 +934,6 @@
         });
         progressBar.addEventListener('input', (e) => { if(audioPlayer.duration) audioPlayer.currentTime = (e.target.value / 100) * audioPlayer.duration; });
 
-        // --- VIDEO ONLINE (Universal URL) ---
-        const videoUrlInput = document.getElementById('video-url-input');
-        const videoPlayerWrapper = document.getElementById('video-player-wrapper');
-        const videoPlaceholder = document.getElementById('video-placeholder');
-        const pipBtn = document.getElementById('pip-btn');
-        const offlineBanner = document.getElementById('offline-banner');
-        let currentVideoElement = null;
-
-        function checkNetworkStatus() { offlineBanner.classList.toggle('hidden', navigator.onLine); }
-        window.addEventListener('online', checkNetworkStatus);
-        window.addEventListener('offline', checkNetworkStatus);
-        checkNetworkStatus();
-
-        document.getElementById('load-video-btn').addEventListener('click', () => {
-            const url = videoUrlInput.value.trim();
-            if (!url) return showToast("Masukkan link terlebih dahulu!");
-            if (!navigator.onLine) return showToast("Fitur video butuh internet!", "wifi-slash");
-
-            pauseSong(); // Jeda musik offline jika ada
-            videoPlaceholder.classList.add('hidden');
-            videoPlayerWrapper.classList.remove('hidden');
-            videoPlayerWrapper.innerHTML = '';
-            pipBtn.classList.add('hidden');
-
-            let finalUrl = url;
-            let isIframe = true;
-
-            // YouTube Parser
-            if (url.includes('youtu.be/')) finalUrl = `https://www.youtube.com/embed/${url.split('youtu.be/')[1]?.split('?')[0]}?autoplay=1`;
-            else if (url.includes('youtube.com/watch')) finalUrl = `https://www.youtube.com/embed/${new URLSearchParams(new URL(url).search).get('v')}?autoplay=1`;
-            // SoundCloud Embed Parser
-            else if (url.includes('soundcloud.com/')) finalUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}&color=%23a855f7&auto_play=true&visual=true`;
-            // Direct Video (.mp4)
-            else if (url.match(/\.(mp4|webm|ogg)$/i)) isIframe = false;
-
-            if (isIframe) {
-                const iframe = document.createElement('iframe');
-                iframe.src = finalUrl;
-                iframe.allow = "autoplay; fullscreen; encrypted-media; picture-in-picture";
-                videoPlayerWrapper.appendChild(iframe);
-            } else {
-                const video = document.createElement('video');
-                video.src = finalUrl;
-                video.controls = true; video.autoplay = true;
-                videoPlayerWrapper.appendChild(video);
-                currentVideoElement = video;
-                
-                if (document.pictureInPictureEnabled) {
-                    pipBtn.classList.remove('hidden');
-                    pipBtn.onclick = () => document.pictureInPictureElement ? document.exitPictureInPicture() : video.requestPictureInPicture();
-                }
-            }
-            showToast("Memuat tayangan online...");
-        });
     </script>
 </body>
 </html>
